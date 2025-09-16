@@ -1,28 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Data Antrian</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-</head>
-<body class="p-6 bg-gray-50">
-  <h1 class="text-2xl font-bold mb-4">Daftar Antrian</h1>
-  <table class="table-auto w-full border-collapse border border-gray-300" id="antrianTable">
-    <thead class="bg-gray-200">
-      <tr>
-        <th class="border p-2">No. Antrian</th>
-        <th class="border p-2">Nama Satker</th>
-        <th class="border p-2">Kode Satker</th>
-        <th class="border p-2">Nomor HP</th>
-        <th class="border p-2">Deskripsi</th>
-        <th class="border p-2">Waktu</th>
-        <th class="border p-2">Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Data Antrian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  </head>
+  <body class="p-6 bg-gray-50">
+    <h1 class="text-2xl font-bold mb-4">Daftar Antrian</h1>
+    <table
+      class="table-auto w-full border-collapse border border-gray-300"
+      id="antrianTable"
+    >
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border p-2">No. Antrian</th>
+          <th class="border p-2">Nama Satker</th>
+          <th class="border p-2">Kode Satker</th>
+          <th class="border p-2">Nomor HP</th>
+          <th class="border p-2">Deskripsi</th>
+          <th class="border p-2">Waktu</th>
+          <th class="border p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <script src="../Javascript/reception.js"></script>
+  <script>
+    const { createClient } = supabase;
+    const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+    const tbody = document.querySelector("#antrianTable tbody");
+
+    async function loadAntrian() {
+      const { data, error } = await supabaseClient
+        .from("antrian")
+        .select("*")
+        .order("nomor_antrian", { ascending: true });
+
+      if (error) return console.error(error);
+
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="border p-2 text-center">${row.nomor_antrian}</td>
+          <td class="border p-2 text-center">${row.nama}</td>
+          <td class="border p-2 text-center">${row.kode}</td>
+          <td class="border p-2 text-center">${row.phone}</td>
+          <td class="border p-2 text-center">${row.deskripsi || ""}</td>
+          <td class="border p-2 text-center">${new Date(row.created_at).toLocaleString("id-ID", {year: 'numeric',month: 'numeric', day: 'numeric',  hour: 'numeric', minute: 'numeric', hour12: true})}</td>
+          <td class="border p-2 text-center">
+            <button onclick='printAntrian(${JSON.stringify(row)})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+function printAntrian(row) {
+  const w = window.open("", "_blank", "width=400,height=400");
+
+  const tanggal = new Date(row.created_at).toLocaleString("id-ID", { 
+    year: 'numeric', 
+    month: 'numeric', 
+    day: 'numeric',  
+    hour: 'numeric', 
+    minute: 'numeric'
+  });
+
+  w.document.write(`
+    <div style="font-family: sans-serif; text-align: center; margin-top: 40px; padding: 10px; justify-content: center;">
+      <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">Nomor Antrian</h1>
+      <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${row.nomor_antrian}</div>
+
+      <p style="font-size: 18px; margin: 5px 0;"> ${row.kode}</p>
+      <p style="font-size: 18px; margin: 5px 0;"> ${row.deskripsi || "-"}</p>
+      <p style="font-size: 18px; margin: 5px 0;"> ${tanggal}</p>
+    </div>
+  `);
+
+  w.print();
+}
+
+    loadAntrian();
+    setInterval(loadAntrian, 5000); // auto-refresh every 5 sec
+  </script>
+  <style>
+    /* Body */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+  color: #1f2937;
+}
+
+/* Judul */
+h1 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #2563eb; /* biru */
+}
+
+/* Tabel */
+#antrianTable {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#antrianTable th {
+  background: #2563eb; /* biru */
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#antrianTable th,
+#antrianTable td {
+  padding: 12px;
+  text-align: center;
+}
+
+#antrianTable tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+#antrianTable tbody tr:hover {
+  background: #e0f2fe; /* biru muda */
+  transition: 0.3s;
+}
+
+/* Tombol Print */
+button {
+  background: #16a34a; /* hijau */
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #15803d; /* hijau tua */
+  transform: scale(1.05);
+}
+  </style>
 </body>
 </html>
