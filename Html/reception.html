@@ -7,14 +7,14 @@
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
   </head>
   <body class="p-6 bg-gray-50">
-    <h1 class="text-2xl font-bold mb-4">Daftar Antrian</h1>
+    <h1 class="text-2xl font-bold mb-4">DAFTAR ANTRIAN</h1>
     <table
       class="table-auto w-full border-collapse border border-gray-300"
       id="antrianTable"
     >
       <thead class="bg-gray-200">
         <tr>
-          <th class="border p-2">No. Antrian</th>
+          <th class="border p-2">No Antrian</th>
           <th class="border p-2">Nama Satker</th>
           <th class="border p-2">Kode Satker</th>
           <th class="border p-2">Nomor HP</th>
@@ -26,55 +26,69 @@
       <tbody></tbody>
     </table>
 
-  <script>
-    const { createClient } = supabase;
-    const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+    <script>
+      const { createClient } = supabase;
+      const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
+      const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-    const tbody = document.querySelector("#antrianTable tbody");
+      const tbody = document.querySelector("#antrianTable tbody");
 
-    async function loadAntrian() {
-      const { data, error } = await supabaseClient
-        .from("antrian")
-        .select("*")
-        .order("nomor_antrian", { ascending: true });
+      async function loadAntrian() {
+        const { data, error } = await supabaseClient
+          .from("antrian")
+          .select("*")
+          .order("nomor_antrian", { ascending: true });
 
-      if (error) return console.error(error);
+        if (error) return console.error(error);
 
-      tbody.innerHTML = "";
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
+        tbody.innerHTML = "";
+        data.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
           <td class="border p-2 text-center">${row.nomor_antrian}</td>
           <td class="border p-2 text-center">${row.nama}</td>
           <td class="border p-2 text-center">${row.kode}</td>
           <td class="border p-2 text-center">${row.phone}</td>
           <td class="border p-2 text-center">${row.deskripsi || ""}</td>
-          <td class="border p-2 text-center">${new Date(row.created_at).toLocaleString("id-ID", {year: 'numeric',month: 'numeric', day: 'numeric',  hour: 'numeric', minute: 'numeric', hour12: true})}</td>
+          <td class="border p-2 text-center">${new Date(
+            row.created_at
+          ).toLocaleString("id-ID", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          })}</td>
           <td class="border p-2 text-center">
-            <button onclick='printAntrian(${JSON.stringify(row)})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
+            <button onclick='printAntrian(${JSON.stringify(
+              row
+            )})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
           </td>
         `;
-        tbody.appendChild(tr);
-      });
-    }
+          tbody.appendChild(tr);
+        });
+      }
 
-function printAntrian(row) {
-  const w = window.open("", "_blank", "width=400,height=400");
+      function printAntrian(row) {
+        const w = window.open("", "_blank", "width=400,height=400");
 
-  const tanggal = new Date(row.created_at).toLocaleString("id-ID", { 
-    year: 'numeric', 
-    month: 'numeric', 
-    day: 'numeric',  
-    hour: 'numeric', 
-    minute: 'numeric'
-  });
+        const tanggal = new Date(row.created_at).toLocaleString("id-ID", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+        });
 
-  w.document.write(`
+        w.document.write(`
     <div style="font-family: sans-serif; text-align: center; margin-top: 40px; padding: 10px; justify-content: center;">
       <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">Nomor Antrian</h1>
-      <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${row.nomor_antrian}</div>
+      <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${
+        row.nomor_antrian
+      }</div>
 
       <p style="font-size: 18px; margin: 5px 0;"> ${row.kode}</p>
       <p style="font-size: 18px; margin: 5px 0;"> ${row.deskripsi || "-"}</p>
@@ -82,76 +96,160 @@ function printAntrian(row) {
     </div>
   `);
 
-  w.print();
-}
+        w.print();
+      }
 
-    loadAntrian();
-    setInterval(loadAntrian, 5000); // auto-refresh every 5 sec
-  </script>
-  <style>
-    /* Body */
-body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
-  color: #1f2937;
-}
+      loadAntrian();
+      setInterval(loadAntrian, 5000); // auto-refresh every 5 sec
+    </script>
+    <style>
+      /* Import font */
+      @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
+      /* Body */
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+        color: #1f2937;
+        padding: 20px;
+      }
 
-/* Judul */
-h1 {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #2563eb; /* biru */
-}
+      /* Judul */
+      h1 {
+        text-align: center;
+        font-size: 70px;
+        font-weight: 900;
+        margin-bottom: 35px;
+        font-family: "Roboto Condensed", sans-serif;
 
-/* Tabel */
-#antrianTable {
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
+        /* Gradient animasi biru */
+        background: linear-gradient(
+          270deg,
+          #3b82f6,
+          /* biru sedang */ #2563eb,
+          /* biru utama */ #1d4ed8,
+          /* biru muda */ #3b82f6
+        );
+        background-size: 600% 600%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
 
-#antrianTable th {
-  background: #2563eb; /* biru */
-  color: white;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+        /* Animasi gradasi berjalan */
+        animation: gradientMove 7s ease infinite;
 
-#antrianTable th,
-#antrianTable td {
-  padding: 12px;
-  text-align: center;
-}
+        /* Glow tipis */
+        text-shadow: 0 0 14px rgba(59, 130, 246, 0.35);
+        letter-spacing: 2px;
+      }
 
-#antrianTable tbody tr:nth-child(even) {
-  background: #f9fafb;
-}
+      /* Keyframes untuk animasi gradient */
+      @keyframes gradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
 
-#antrianTable tbody tr:hover {
-  background: #e0f2fe; /* biru muda */
-  transition: 0.3s;
-}
+      /* Tabel */
+      #antrianTable {
+        width: 100%;
+        background: white;
+        border-radius: 16px; /* lebih melengkung */
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        border: none;
+      }
 
-/* Tombol Print */
-button {
-  background: #16a34a; /* hijau */
-  padding: 6px 14px;
-  border-radius: 6px;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
-  transition: 0.3s;
-  cursor: pointer;
-}
+      /* Head tabel */
+      #antrianTable thead {
+        background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      }
 
-button:hover {
-  background: #15803d; /* hijau tua */
-  transform: scale(1.05);
-}
-  </style>
-</body>
+      #antrianTable th {
+        color: rgb(255, 255, 255);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 14px;
+        font-size: 14px;
+
+        border-right: 1px solid rgba(255, 255, 255, 0.4);
+        border-bottom: 2px solid #1e40af; /* garis bawah lebih tegas */
+      }
+
+      /* hilangkan border kanan di th terakhir */
+      #antrianTable th:last-child {
+        border-right: none;
+      }
+
+      /* Isi tabel */
+      #antrianTable td {
+        padding: 14px;
+        text-align: center;
+        font-size: 15px;
+        border-bottom: 1px solid #e5eaeb;
+
+        /* Biar teks panjang turun ke bawah */
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      /* Nama Satker = kolom ke-2 */
+      #antrianTable td:nth-child(2) {
+        text-align: left;
+      }
+
+      /* Deskripsi = kolom ke-5 */
+      #antrianTable td:nth-child(5) {
+        text-align: left;
+      }
+
+      /* Waktu = kolom ke-6 */
+      #antrianTable td:nth-child(6) {
+        text-align: left;
+      }
+
+      /* Khusus Deskripsi (kolom ke-5) biar lebih fleksibel */
+      #antrianTable td:nth-child(5) {
+        text-align: left;
+      }
+
+      /* Row efek */
+      #antrianTable tbody tr:nth-child(even) {
+        background: #f9fafb;
+      }
+
+      #antrianTable tbody tr:hover {
+        background: #dbeafe; /* biru lebih jelas */
+        transform: scale(1.01);
+        transition: all 0.3s ease;
+      }
+
+      /* Tombol Print */
+      button {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        padding: 8px 16px;
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.3s;
+        cursor: pointer;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        background: linear-gradient(135deg, #15803d, #166534);
+        transform: translateY(-2px) scale(1.07);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+      }
+    </style>
+  </body>
 </html>
