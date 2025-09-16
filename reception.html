@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Antrian</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+</head>
+<body class="p-6 bg-gray-50">
+  <h1 class="text-2xl font-bold mb-4">Daftar Antrian</h1>
+  <table class="table-auto w-full border-collapse border border-gray-300" id="antrianTable">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="border p-2">No Antrian</th>
+        <th class="border p-2">Nama</th>
+        <th class="border p-2">Kode</th>
+        <th class="border p-2">Deskripsi</th>
+        <th class="border p-2">Waktu</th>
+        <th class="border p-2">Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const { createClient } = supabase;
+    const supabaseUrl = "https://YOUR-PROJECT.supabase.co";   // <-- replace
+    const supabaseKey = "YOUR-ANON-KEY";                      // <-- replace
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+    const tbody = document.querySelector("#antrianTable tbody");
+
+    // Render a row
+    function renderRow(row) {
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-id", row.id);
+      tr.innerHTML = `
+        <td class="border p-2">${row.nomor_antrian}</td>
+        <td class="border p-2">${row.nama}</td>
+        <td class="border p-2">${row.kode}</td>
+        <td class="border p-2">${row.deskripsi || ""}</td>
+        <td class="border p-2">${new Date(row.created_at).toLocaleString()}</td>
+        <td class="border p-2">
+          <button onclick="printAntrian(${row.nomor_antrian})" class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
+        </td>
+      `;
+      return tr;
+    }
+
+    // Initial load
+    async function loadAntrian() {
+      const { data, error } = await supabaseClient
+        .from("Antrian")
+        .select("*")
+        .order("nomor_antrian", { ascending: true });
+
+      if (error) return console.error(error);
+
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        tbody.appendChild(renderRow(row));
+      });
+    }
+
+    // Subscribe to realtime insert
+    supabaseClient
+      .channel("antrian-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "Antrian" },
+        payload => {
+          const newRow = payload.new;
+          tbody.appendChild(renderRow(newRow));
+        }
+      )
+      .subscribe();
+
+    function printAntrian(no) {
+      const w = window.open("", "_blank", "width=400,height=400");
+      w.document.write(`
+        <div style="font-size:40px; text-align:center; margin-top:50px;">
+          Nomor Antrian<br><b>${no}</b>
+        </div>
+      `);
+      w.print();
+    }
+
+    loadAntrian();
+  </script>
+</body>
+</html>
