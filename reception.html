@@ -11,9 +11,10 @@
   <table class="table-auto w-full border-collapse border border-gray-300" id="antrianTable">
     <thead class="bg-gray-200">
       <tr>
-        <th class="border p-2">No Antrian</th>
-        <th class="border p-2">Nama</th>
-        <th class="border p-2">Kode</th>
+        <th class="border p-2">No. Antrian</th>
+        <th class="border p-2">Nama Satker</th>
+        <th class="border p-2">Kode Satker</th>
+        <th class="border p-2">Nomor HP</th>
         <th class="border p-2">Deskripsi</th>
         <th class="border p-2">Waktu</th>
         <th class="border p-2">Action</th>
@@ -24,33 +25,15 @@
 
   <script>
     const { createClient } = supabase;
-    const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";   // <-- replace
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";                      // <-- replace
+    const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
     const tbody = document.querySelector("#antrianTable tbody");
 
-    // Render a row
-    function renderRow(row) {
-      const tr = document.createElement("tr");
-      tr.setAttribute("data-id", row.id);
-      tr.innerHTML = `
-        <td class="border p-2">${row.nomor_antrian}</td>
-        <td class="border p-2">${row.nama}</td>
-        <td class="border p-2">${row.kode}</td>
-        <td class="border p-2">${row.deskripsi || ""}</td>
-        <td class="border p-2">${new Date(row.created_at).toLocaleString()}</td>
-        <td class="border p-2">
-          <button onclick="printAntrian(${row.nomor_antrian})" class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
-        </td>
-      `;
-      return tr;
-    }
-
-    // Initial load
     async function loadAntrian() {
       const { data, error } = await supabaseClient
-        .from("Antrian")
+        .from("antrian")
         .select("*")
         .order("nomor_antrian", { ascending: true });
 
@@ -58,34 +41,50 @@
 
       tbody.innerHTML = "";
       data.forEach(row => {
-        tbody.appendChild(renderRow(row));
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="border p-2 text-center">${row.nomor_antrian}</td>
+          <td class="border p-2 text-center">${row.nama}</td>
+          <td class="border p-2 text-center">${row.kode}</td>
+          <td class="border p-2 text-center">${row.phone}</td>
+          <td class="border p-2 text-center">${row.deskripsi || ""}</td>
+          <td class="border p-2 text-center">${new Date(row.created_at).toLocaleString("id-ID", {year: 'numeric',month: 'numeric', day: 'numeric',  hour: 'numeric', minute: 'numeric', hour12: true})}</td>
+          <td class="border p-2 text-center">
+            <button onclick='printAntrian(${JSON.stringify(row)})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
     }
 
-    // Subscribe to realtime insert
-    supabaseClient
-      .channel("antrian-channel")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "Antrian" },
-        payload => {
-          const newRow = payload.new;
-          tbody.appendChild(renderRow(newRow));
-        }
-      )
-      .subscribe();
+function printAntrian(row) {
+  const w = window.open("", "_blank", "width=400,height=400");
 
-    function printAntrian(no) {
-      const w = window.open("", "_blank", "width=400,height=400");
-      w.document.write(`
-        <div style="font-size:40px; text-align:center; margin-top:50px;">
-          Nomor Antrian<br><b>${no}</b>
-        </div>
-      `);
-      w.print();
-    }
+  const tanggal = new Date(row.created_at).toLocaleString("id-ID", { 
+    year: 'numeric', 
+    month: 'numeric', 
+    day: 'numeric',  
+    hour: 'numeric', 
+    minute: 'numeric'
+  });
+
+  w.document.write(`
+    <div style="font-family: sans-serif; text-align: center; margin-top: 40px; padding: 10px; justify-content: center;">
+      <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">Nomor Antrian</h1>
+      <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${row.nomor_antrian}</div>
+
+      <p style="font-size: 18px; margin: 5px 0;"> ${row.kode}</p>
+      <p style="font-size: 18px; margin: 5px 0;"> ${row.deskripsi || "-"}</p>
+      <p style="font-size: 18px; margin: 5px 0;"> ${tanggal}</p>
+    </div>
+  `);
+
+  w.print();
+}
+
 
     loadAntrian();
+    setInterval(loadAntrian, 5000); // auto-refresh every 5 sec
   </script>
 </body>
 </html>
