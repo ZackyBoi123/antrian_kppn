@@ -5,27 +5,158 @@
   <title>Antrian Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <link rel="icon" href="../Css/index.css">
+  <style>
+    
+body {
+	background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+	min-height: 100vh;
+	font-family: 'Segoe UI', Arial, sans-serif;
+	margin: 0;
+}
+
+.container {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+	padding: 2.5rem 2rem;
+	max-width: 420px;
+	margin: 40px auto;
+}
+
+h1 {
+	text-align: center;
+	color: #2563eb;
+	font-size: 2rem;
+	margin-bottom: 1.5rem;
+	letter-spacing: 1px;
+}
+
+form label {
+	display: block;
+	margin-bottom: 0.3rem;
+	color: #374151;
+	font-weight: 500;
+}
+
+form input,
+form textarea {
+	width: 100%;
+	padding: 0.7rem 1rem;
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	background: #f9fafb;
+	transition: border 0.2s;
+}
+
+form input:focus,
+form textarea:focus {
+	border: 1.5px solid #2563eb;
+	outline: none;
+	background: #fff;
+}
+
+form button[type="submit"] {
+	background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+	color: #fff;
+	border: none;
+	padding: 0.8rem 0;
+	border-radius: 8px;
+	font-size: 1.1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.1s;
+	box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+
+form button[type="submit"]:hover {
+	background: linear-gradient(90deg, #1d4ed8 60%, #3b82f6 100%);
+	transform: translateY(-2px) scale(1.03);
+}
+
+/* Suggestions dropdown */
+#namaSuggestions, #kodeSuggestions {
+	background: #fff;
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+	margin-top: 2px;
+	z-index: 100;
+}
+#namaSuggestions li, #kodeSuggestions li {
+	padding: 0.6rem 1rem;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+#namaSuggestions li:hover, #kodeSuggestions li:hover {
+	background: #e0e7ff;
+}
+
+#success {
+	text-align: center;
+	margin-top: 2rem;
+}
+#success .text-green-500 {
+	font-size: 3rem;
+	margin-bottom: 0.5rem;
+}
+
+@media (max-width: 600px) {
+	.container {
+		padding: 1.2rem 0.5rem;
+		max-width: 98vw;
+	}
+	h1 {
+		font-size: 1.3rem;
+	}
+}
+
+/* FLOATING LABEL */
+.floating-label {
+  position: absolute;
+  left: 12px;
+  top: 13px;
+  font-size: 16px;
+  color: #000000;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+  background: transparent;
+  padding: 0 4px;
+}
+    
+.input-bordered:focus + .floating-label,
+.input-bordered:not(:placeholder-shown) + .floating-label {
+  top: -10px;
+  font-size: 12px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  backdrop-filter: blur(7px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 0 4px;
+}
+
+  </style>
 </head>
-<body class="flex items-center justify-center h-screen bg-gray-100">
+<body class="flex items-center justify-center h-screen bg-gray-300">
   <div class="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-4">Form Antrian</h1>
+    <h1 class="text-3xl font-bold text-center mb-4">Form Antrian</h1>
     <form id="antrianForm" class="space-y-4">
 
       <!-- Nama Satker -->
       <div class="relative">
-        <label for="nama">Nama Satker</label>
-        <input type="text" id="nama" name="nama" 
-          class="w-full p-2 border rounded" autocomplete="off">
+        <input type="text" id="nama" name="nama" placeholder=" " class="input input-bordered w-full p-2 border rounded" autocomplete="off"/>
+          <label class="floating-label text-black">Nama Satker</label>
         <ul id="namaSuggestions" 
             class="absolute left-0 right-0 bg-white border rounded shadow max-h-48 overflow-y-auto hidden z-50"></ul>
       </div>
 
       <!-- Kode Satker -->
       <div class="relative">
-        <label for="kode">Kode Satker</label>
-        <input type="text" id="kode" name="kode" 
-          class="w-full p-2 border rounded" autocomplete="off">
+        <input type="text" id="kode" name="kode" placeholder=" " class="input input-bordered w-full p-2 border rounded" autocomplete="off">
+          <label class="floating-label text-black">Kode Satker</label>
         <ul id="kodeSuggestions" 
             class="absolute left-0 right-0 bg-white border rounded shadow max-h-48 overflow-y-auto hidden z-50"></ul>
       </div>
@@ -43,134 +174,7 @@
     </div>
   </div>
   
-  <script>
-    const { createClient } = supabase;
-    const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
-
-  const supabaseClient = createClient(supabaseUrl, supabaseKey);
-
- // Debounce helper (to avoid spamming Supabase)
-function debounce(fn, delay) {
-  let timer;
-  return function(...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-
-const form = document.getElementById("antrianForm");
-const successDiv = document.getElementById("success");
-
-const namaInput = document.getElementById("nama");
-const kodeInput = document.getElementById("kode");
-const namaSuggestions = document.getElementById("namaSuggestions");
-const kodeSuggestions = document.getElementById("kodeSuggestions");
-
-// Fetch Nama Satker suggestions
-async function fetchNamaSuggestions(query) {
-  if (!query) {
-    namaSuggestions.classList.add("hidden");
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("satker")
-    .select("nama, kode")
-    .ilike("nama", `%${query}%`)
-    .limit(10);
-
-  if (error) return console.error(error);
-
-  namaSuggestions.innerHTML = "";
-  data.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = item.nama;
-    li.className = "p-2 hover:bg-blue-100 cursor-pointer";
-    li.onclick = () => {
-      namaInput.value = item.nama;
-      kodeInput.value = item.kode; // autofill kode
-      namaSuggestions.classList.add("hidden");
-    };
-    namaSuggestions.appendChild(li);
-  });
-
-  namaSuggestions.classList.toggle("hidden", data.length === 0);
-}
-
-// Fetch Kode Satker suggestions
-async function fetchKodeSuggestions(query) {
-  if (!query) {
-    kodeSuggestions.classList.add("hidden");
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("satker")
-    .select("kode, nama")
-    .ilike("kode", `%${query}%`)
-    .limit(10);
-
-  if (error) return console.error(error);
-
-  kodeSuggestions.innerHTML = "";
-  data.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = item.kode;
-    li.className = "p-2 hover:bg-blue-100 cursor-pointer";
-    li.onclick = () => {
-      kodeInput.value = item.kode;
-      namaInput.value = item.nama; // autofill nama
-      kodeSuggestions.classList.add("hidden");
-    };
-    kodeSuggestions.appendChild(li);
-  });
-
-  kodeSuggestions.classList.toggle("hidden", data.length === 0);
-}
-
-// Attach events with debounce
-namaInput.addEventListener("input", debounce((e) => {
-  fetchNamaSuggestions(e.target.value);
-}, 300));
-
-kodeInput.addEventListener("input", debounce((e) => {
-  fetchKodeSuggestions(e.target.value);
-}, 300));
-
-// Hide suggestions if clicked outside
-document.addEventListener("click", (e) => {
-  if (!namaInput.contains(e.target) && !namaSuggestions.contains(e.target)) {
-    namaSuggestions.classList.add("hidden");
-  }
-  if (!kodeInput.contains(e.target) && !kodeSuggestions.contains(e.target)) {
-    kodeSuggestions.classList.add("hidden");
-  }
-});
-
-
-  // 🔹 Submit form
-  form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const nama = namaInput.value;
-  const kode = kodeInput.value;
-  const phone = document.getElementById("handphone").value;
-  const deskripsi = document.getElementById("deskripsi").value;
-
-  const { error } = await supabaseClient
-    .from("antrian")
-    .insert([{ nama, kode, phone, deskripsi }]);
-
-  if (error) {
-    alert("Gagal kirim data: " + error.message);
-  } else {
-    form.classList.add("hidden");
-    successDiv.classList.remove("hidden");
-  }
-});
-
-</script>
+  <script src="../Javascript/index.js"></script>
 
 </body>
 </html>

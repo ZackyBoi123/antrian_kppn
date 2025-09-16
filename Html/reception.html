@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Data Antrian</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-</head>
-<body class="p-6 bg-gray-50">
-  <h1 class="text-2xl font-bold mb-4">Daftar Antrian</h1>
-  <table class="table-auto w-full border-collapse border border-gray-300" id="antrianTable">
-    <thead class="bg-gray-200">
-      <tr>
-        <th class="border p-2">No. Antrian</th>
-        <th class="border p-2">Nama Satker</th>
-        <th class="border p-2">Kode Satker</th>
-        <th class="border p-2">Nomor HP</th>
-        <th class="border p-2">Deskripsi</th>
-        <th class="border p-2">Waktu</th>
-        <th class="border p-2">Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Data Antrian</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  </head>
+  <body class="p-6 bg-gray-50">
+    <h1 class="text-2xl font-bold mb-4">Daftar Antrian</h1>
+    <table
+      class="table-auto w-full border-collapse border border-gray-300"
+      id="antrianTable"
+    >
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border p-2">No. Antrian</th>
+          <th class="border p-2">Nama Satker</th>
+          <th class="border p-2">Kode Satker</th>
+          <th class="border p-2">Nomor HP</th>
+          <th class="border p-2">Deskripsi</th>
+          <th class="border p-2">Waktu</th>
+          <th class="border p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
   <script>
     const { createClient } = supabase;
