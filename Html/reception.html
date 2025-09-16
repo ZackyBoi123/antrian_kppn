@@ -5,103 +5,6 @@
     <title>Data Antrian</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  </head>
-  <body class="p-6 bg-gray-50">
-    <h1 class="text-2xl font-bold mb-4">DAFTAR ANTRIAN</h1>
-    <table
-      class="table-auto w-full border-collapse border border-gray-300"
-      id="antrianTable"
-    >
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="border p-2">No Antrian</th>
-          <th class="border p-2">Nama Satker</th>
-          <th class="border p-2">Kode Satker</th>
-          <th class="border p-2">Nomor HP</th>
-          <th class="border p-2">Deskripsi</th>
-          <th class="border p-2">Waktu</th>
-          <th class="border p-2">Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <script>
-      const { createClient } = supabase;
-      const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
-      const supabaseKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
-      const supabaseClient = createClient(supabaseUrl, supabaseKey);
-
-      const tbody = document.querySelector("#antrianTable tbody");
-
-      async function loadAntrian() {
-        const { data, error } = await supabaseClient
-          .from("antrian")
-          .select("*")
-          .order("nomor_antrian", { ascending: true });
-
-        if (error) return console.error(error);
-
-        tbody.innerHTML = "";
-        data.forEach((row) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-          <td class="border p-2 text-center">${row.nomor_antrian}</td>
-          <td class="border p-2 text-center">${row.nama}</td>
-          <td class="border p-2 text-center">${row.kode}</td>
-          <td class="border p-2 text-center">${row.phone}</td>
-          <td class="border p-2 text-center">${row.deskripsi || ""}</td>
-          <td class="border p-2 text-center">${new Date(
-            row.created_at
-          ).toLocaleString("id-ID", {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-          })}</td>
-          <td class="border p-2 text-center">
-            <button onclick='printAntrian(${JSON.stringify(
-              row
-            )})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
-          </td>
-        `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      function printAntrian(row) {
-        const w = window.open("", "_blank", "width=400,height=400");
-
-        const tanggal = new Date(row.created_at).toLocaleString("id-ID", {
-          year: "numeric",
-          month: "numeric",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-        });
-
-        w.document.write(`
-    <div style="font-family: sans-serif; text-align: center; margin-top: 40px; padding: 10px; justify-content: center;">
-      <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">Nomor Antrian</h1>
-      <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${
-        row.nomor_antrian
-      }</div>
-
-      <p style="font-size: 18px; margin: 5px 0;"> ${row.kode}</p>
-      <p style="font-size: 18px; margin: 5px 0;"> ${row.deskripsi || "-"}</p>
-      <p style="font-size: 18px; margin: 5px 0;"> ${tanggal}</p>
-    </div>
-  `);
-
-        w.print();
-      }
-
-      loadAntrian();
-      setInterval(loadAntrian, 5000); // auto-refresh every 5 sec
-    </script>
     <style>
       /* Import font */
       @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
@@ -160,10 +63,18 @@
       #antrianTable {
         width: 100%;
         background: white;
-        border-radius: 16px; /* lebih melengkung */
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+          0 10px 20px rgba(0, 0, 0, 0.08);
         border: none;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+      }
+
+      #antrianTable:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15),
+          0 14px 28px rgba(0, 0, 0, 0.12);
       }
 
       /* Head tabel */
@@ -251,5 +162,106 @@
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
       }
     </style>
+  </head>
+  <body class="p-6 bg-gray-50">
+    <h1 class="text-2xl font-bold mb-4">DAFTAR ANTRIAN</h1>
+    <table
+      class="table-auto w-full border-collapse border border-gray-300"
+      id="antrianTable"
+    >
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border p-2">No Antrian</th>
+          <th class="border p-2">Nama Satker</th>
+          <th class="border p-2">Kode Satker</th>
+          <th class="border p-2">Nomor HP</th>
+          <th class="border p-2">Deskripsi</th>
+          <th class="border p-2">Waktu</th>
+          <th class="border p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const { createClient } = supabase;
+      const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
+      const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+      const tbody = document.querySelector("#antrianTable tbody");
+
+      async function loadAntrian() {
+        const { data, error } = await supabaseClient
+          .from("antrian")
+          .select("*")
+          .order("nomor_antrian", { ascending: true });
+
+        if (error) return console.error(error);
+
+        tbody.innerHTML = "";
+        data.forEach((row) => {
+          const tr = document.createElement("tr");
+          
+          const day = new Date(row.created_at).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+          });
+
+          const hour = new Date(row.created_at).toLocaleTimeString("id-ID", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
+
+          tr.innerHTML = `
+          <td class="border p-2 text-center">${row.nomor_antrian}</td>
+          <td class="border p-2 text-center">${row.nama}</td>
+          <td class="border p-2 text-center">${row.kode}</td>
+          <td class="border p-2 text-center">${row.phone}</td>
+          <td class="border p-2 text-center">${row.deskripsi || ""}</td>
+          <td class="border p-2 text-center">${day} <br> ${hour}</td>
+          <td class="border p-2 text-center">
+            <button onclick='printAntrian(${JSON.stringify(
+              row
+            )})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
+          </td>
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function printAntrian(row) {
+        const w = window.open("", "_blank", "width=400,height=400");
+
+        const tanggal = new Date(row.created_at).toLocaleString("id-ID", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+        });
+
+        w.document.write(`
+    <div style="font-family: sans-serif; text-align: center; margin-top: 40px; padding: 10px; justify-content: center;">
+      <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">Nomor Antrian</h1>
+      <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${
+        row.nomor_antrian
+      }</div>
+
+      <p style="font-size: 18px; margin: 5px 0;"> ${row.kode}</p>
+      <p style="font-size: 18px; margin: 5px 0;"> ${row.deskripsi || "-"}</p>
+      <p style="font-size: 18px; margin: 5px 0;"> ${tanggal}</p>
+    </div>
+  `);
+
+        w.print();
+      }
+
+      loadAntrian();
+      setInterval(loadAntrian, 5000); // auto-refresh every 5 sec
+    </script>
   </body>
 </html>
