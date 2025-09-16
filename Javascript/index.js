@@ -15,6 +15,7 @@ function debounce(fn, delay) {
 
 const form = document.getElementById("antrianForm");
 const successDiv = document.getElementById("success");
+const h1 = document.getElementById("header");
 
 const namaInput = document.getElementById("nama");
 const kodeInput = document.getElementById("kode");
@@ -112,14 +113,20 @@ document.addEventListener("click", (e) => {
   const phone = document.getElementById("handphone").value;
   const deskripsi = document.getElementById("deskripsi").value;
 
-  const { error } = await supabaseClient
+  const { data ,error } = await supabaseClient
     .from("antrian")
-    .insert([{ nama, kode, phone, deskripsi }]);
+    .insert([{ nama, kode, phone, deskripsi }])
+    .select("nomor_antrian")
+    .single();
 
   if (error) {
     alert("Gagal kirim data: " + error.message);
   } else {
     form.classList.add("hidden");
+    h1.classList.add("hidden");
     successDiv.classList.remove("hidden");
   }
+
+    // Show nomor antrian
+    document.getElementById("nomorDisplay").textContent = data.nomor_antrian;
 });
