@@ -1,5 +1,26 @@
 {
   "dependencies": {
-    "@vercel/analytics": "^1.5.0"
-  }
+    "@tailwindcss/cli": "^4.1.13",
+    "@vercel/analytics": "^1.5.0",
+    "tailwindcss": "^4.1.13"
+  },
+  "name": "antrian_kppn",
+  "version": "1.0.0",
+  "description": "\"# antrian_kppn\"",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss -i ./src/input.css -o ./public/output.css --minify",
+    "dev": "npx tailwindcss -i ./src/input.css -o ./public/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZackyBoi123/antrian_kppn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZackyBoi123/antrian_kppn/issues"
+  },
+  "homepage": "https://github.com/ZackyBoi123/antrian_kppn#readme"
 }
