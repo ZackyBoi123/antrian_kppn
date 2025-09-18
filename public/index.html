@@ -6,6 +6,8 @@
   <title>Antrian Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <style>
     
 body {
@@ -200,6 +202,10 @@ form button[type="submit"]:hover {
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
 
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+    //* Wire up Vercel Analytics
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 
   // Debounce helper (to avoid spamming Supabase)
   function debounce(fn, delay) {
