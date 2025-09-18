@@ -126,7 +126,7 @@
 
       /* Waktu = kolom ke-6 */
       #antrianTable td:nth-child(6) {
-        text-align: left;
+        text-align: center;
       }
 
       /* Khusus Deskripsi (kolom ke-5) biar lebih fleksibel */
@@ -141,7 +141,7 @@
 
       #antrianTable tbody tr:hover {
         background: #dbeafe; /* biru lebih jelas */
-        transform: scale(1.01);
+        /* transform: scale(1.01); */
         transition: all 0.3s ease;
       }
 
@@ -192,12 +192,16 @@
       const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
       const tbody = document.querySelector("#antrianTable tbody");
+      const today = new Date().toISOString().split("T")[0]; // e.g. 2025-09-16
 
       async function loadAntrian() {
-        const { data, error } = await supabaseClient
-          .from("antrian")
-          .select("*")
-          .order("nomor_antrian", { ascending: true });
+
+      const { data, error } = await supabaseClient
+        .from("antrian")
+        .select("*")
+        .gte("created_at", `${today}T00:00:00`)
+        .lt("created_at", `${today}T23:59:59`)
+        .order("created_at", { ascending: true });
 
         if (error) return console.error(error);
 
@@ -218,13 +222,13 @@
           });
 
           tr.innerHTML = `
-          <td class="border p-2 text-center">${row.nomor_antrian}</td>
-          <td class="border p-2 text-center">${row.nama}</td>
-          <td class="border p-2 text-center">${row.kode}</td>
-          <td class="border p-2 text-center">${row.phone}</td>
-          <td class="border p-2 text-center">${row.deskripsi || ""}</td>
-          <td class="border p-2 text-center">${day} <br> ${hour}</td>
-          <td class="border p-2 text-center">
+          <td class="border p-2">${row.nomor_antrian}</td>
+          <td class="border p-2">${row.nama}</td>
+          <td class="border p-2">${row.kode}</td>
+          <td class="border p-2">${row.phone}</td>
+          <td class="border p-2">${row.deskripsi || ""}</td>
+          <td class="border p-2">${day} <br> ${hour}</td>
+          <td class="border p-2">
             <button onclick='printAntrian(${JSON.stringify(
               row
             )})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
