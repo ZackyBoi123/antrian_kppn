@@ -189,32 +189,26 @@ form button[type="submit"]:hover {
   }
 }
 
+/* start hidden (removed from flow) */
 .error-msg {
-  display: block;
+  display: none;                 /* removed from layout when hidden */
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 280ms ease, transform 280ms ease;
   max-width: 100%;
   font-size: 1.05rem;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
-  background: rgba(220, 38, 38, 0.08);  /* light red background */
-  color: #b91c1c;                       /* red text */
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
   font-weight: 600;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 360ms ease, transform 360ms ease;
-  pointer-events: none;
 }
 
-/* visible state */
-.error-msg.show {
+/* visible state — animates in */
+.error-msg.visible {
+  display: block; /* make it participate in layout before animation */
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* hidden state */
-.error-msg.hide {
-  opacity: 0;
-  transform: translateY(-6px);
 }
 
   </style>
@@ -225,7 +219,7 @@ form button[type="submit"]:hover {
     <h1 id="header" class="text-3xl font-bold text-center">Form Antrian</h1>
     <form id="antrianForm" class="space-y-4">
 
-      <div id="errorMSG" class="error-msg" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      <div id="errorMSG" class="error-msg hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
       <!-- Nama Satker -->
       <div class="relative rounded-xl">
@@ -286,6 +280,7 @@ form button[type="submit"]:hover {
   const form = document.getElementById("antrianForm");
   const successDiv = document.getElementById("success");
   const h1 = document.getElementById("header");
+  let transitionHandler = null;
   let errorTimer = null;
 
   const namaInput = document.getElementById("nama");
@@ -293,24 +288,69 @@ form button[type="submit"]:hover {
   const namaSuggestions = document.getElementById("namaSuggestions");
   const kodeSuggestions = document.getElementById("kodeSuggestions");
 
-  // Show error message
-  function showError(message) {
-    const errorMSG = document.getElementById("errorMSG");
-    errorMSG.textContent = message;
+// Show error message
+function showError(message, timeout = 3000) {
+  const errorMSG = document.getElementById("errorMSG");
+  errorMSG.textContent = message;
 
-    // reset classes
-    errorMSG.classList.remove("hide");
-    void errorMSG.offsetWidth; // reflow to restart transition
-    errorMSG.classList.add("show");
-
-    if (errorTimer) clearTimeout(errorTimer);
-
-    // hide after 3s
-    errorTimer = setTimeout(() => {
-      errorMSG.classList.remove("show");
-      errorMSG.classList.add("hide");
-    }, 3000);
+  // clear previous timeout and transition handler (if any)
+  if (errorTimer) {
+    clearTimeout(errorTimer);
+    errorTimer = null;
   }
+  if (transitionHandler) {
+    errorMSG.removeEventListener('transitionend', transitionHandler);
+    transitionHandler = null;
+  }
+
+  // If element already visible, restart animation cleanly
+  if (errorMSG.style.display === 'block') {
+    // restart by forcing reflow and toggling class
+    errorMSG.classList.remove('visible');
+    void errorMSG.offsetWidth;
+    errorMSG.classList.add('visible');
+  } else {
+    // Make block so it takes space, then on next frame add `.visible` to animate
+    errorMSG.style.display = 'block';
+    // double RAF is a reliable way to start the transition across browsers
+    requestAnimationFrame(() => requestAnimationFrame(() => errorMSG.classList.add('visible')));
+  }
+
+  // schedule hide after timeout
+  errorTimer = setTimeout(() => hideError(errorMSG), timeout);
+}
+
+function hideError(el) {
+  // remove visible class -> triggers transition to opacity:0 + translateY
+  el.classList.remove('visible');
+
+  // ensure we don't attach multiple handlers
+  if (transitionHandler) {
+    el.removeEventListener('transitionend', transitionHandler);
+    transitionHandler = null;
+  }
+
+  // wait for transition to finish then set display:none
+  transitionHandler = function onEnd(e) {
+    // guard: only respond to opacity transition (avoids multiple fires)
+    if (e.propertyName !== 'opacity') return;
+    el.style.display = 'none';
+    el.removeEventListener('transitionend', transitionHandler);
+    transitionHandler = null;
+  };
+
+  el.addEventListener('transitionend', transitionHandler);
+
+  // fallback: if transitionend doesn't fire (reduced-motion, weird browser),
+  // forcibly hide after transition duration + small buffer
+  setTimeout(() => {
+    if (transitionHandler) {
+      el.style.display = 'none';
+      el.removeEventListener('transitionend', transitionHandler);
+      transitionHandler = null;
+    }
+  }, 350);
+}
 
   // Fetch Nama Satker suggestions
   async function fetchNamaSuggestions(query) {
