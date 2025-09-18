@@ -5,32 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Antrian Form</title>
   <link rel="stylesheet" href="output.css">
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script defer src="/_vercel/insights/script.js"></script>
   <style>
     
 body {
-	background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-	min-height: 100vh;
-	font-family: 'Segoe UI', Arial, sans-serif;
-	margin: 0;
-}
-
-.container {
-	background: #fff;
-	border-radius: 18px;
-	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-	padding: 2.5rem 2rem;
-	max-width: 420px;
-	margin: 40px auto;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 h1 {
 	text-align: center;
 	color: #2563eb;
 	font-size: 2rem;
-	margin-bottom: 1.5rem;
+	margin-bottom: 0.75rem;
 	letter-spacing: 1px;
 }
 
@@ -41,7 +32,6 @@ form label {
 	font-weight: 500;
 }
 
-form input,
 form textarea {
 	width: 100%;
 	padding: 0.7rem 1rem;
@@ -51,13 +41,6 @@ form textarea {
 	font-size: 1rem;
 	background: #f9fafb;
 	transition: border 0.2s;
-}
-
-form input:focus,
-form textarea:focus {
-	border: 1.5px solid #2563eb;
-	outline: none;
-	background: #fff;
 }
 
 form button[type="submit"] {
@@ -79,21 +62,55 @@ form button[type="submit"]:hover {
 }
 
 /* Suggestions dropdown */
-#namaSuggestions, #kodeSuggestions {
-	background: #fff;
-	border: 1px solid #d1d5db;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-	margin-top: 2px;
-	z-index: 100;
+.suggestions-dropdown {
+  position: absolute;
+  top: 90%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 50;
+  margin-top: 8px;
 }
-#namaSuggestions li, #kodeSuggestions li {
-	padding: 0.6rem 1rem;
-	cursor: pointer;
-	transition: background 0.15s;
+
+.suggestion-item {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.05);
 }
-#namaSuggestions li:hover, #kodeSuggestions li:hover {
-	background: #e0e7ff;
+
+.suggestion-item:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  font-weight: 600;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+/* Custom scrollbar */
+.suggestions-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 2px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
 }
 
 #success {
@@ -105,10 +122,6 @@ form button[type="submit"]:hover {
 }
 
 @media (max-width: 600px) {
-	.container {
-		padding: 1.2rem 0.5rem;
-		max-width: 98vw;
-	}
 	h1 {
 		font-size: 1.3rem;
 	}
@@ -117,31 +130,55 @@ form button[type="submit"]:hover {
 /* FLOATING LABEL */
 .floating-label {
   position: absolute;
-  left: 12px;
-  top: 7px;
-  font-size: 16px;
-  color: #000000;
-  transition: all 0.2s ease-in-out;
+  left: 1.25rem;
+  top: 0.95rem;
+  font-size: 1.10rem;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   pointer-events: none;
   background: transparent;
-  padding: 0 4px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(102, 126, 234, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+
+ .form-input:focus {
+   border-color: #667eea;
+   background: rgba(255, 255, 255, 0.95);
+   box-shadow: 
+     0 0 0 4px rgba(102, 126, 234, 0.1),
+     0 4px 16px rgba(102, 126, 234, 0.15);
+   transform: translateY(-2px);
+}
+ .form-input:not(:placeholder-shown) {
+  border-color: #667eea;
 }
     
-.input-bordered:focus + .floating-label,
-.input-bordered:not(:placeholder-shown) + .floating-label {
-  top: -10px;
-  font-size: 12px;
-  color: rgb(0, 0, 0);
-  background-color: rgba(255, 255, 255, 0.1);
-  -webkit-backdrop-filter: blur(10px); /* For Safari */
-  backdrop-filter: blur(7px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 0 4px;
+.form-input:focus + .floating-label,
+.form-input:not(:placeholder-shown) + .floating-label {
+  top: -12px;
+  left: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #667eea;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0 8px;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
 }
 
 @media (max-width: 600px) {
-  form input,
   form textarea {
     font-size: 1rem;
     padding: 1rem;
@@ -152,39 +189,70 @@ form button[type="submit"]:hover {
   }
 }
 
+.error-msg {
+  display: block;
+  max-width: 100%;
+  font-size: 1.05rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.08);  /* light red background */
+  color: #b91c1c;                       /* red text */
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 360ms ease, transform 360ms ease;
+  pointer-events: none;
+}
+
+/* visible state */
+.error-msg.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* hidden state */
+.error-msg.hide {
+  opacity: 0;
+  transform: translateY(-6px);
+}
 
   </style>
 </head>
 <body class="flex items-center justify-center h-screen bg-gray-300">
   <div class="bg-white p-6 m-6 rounded-xl shadow-md w-full max-w-md">
-    <h1 id="header" class="text-3xl font-bold text-center mb-4">Form Antrian</h1>
+
+    <h1 id="header" class="text-3xl font-bold text-center">Form Antrian</h1>
     <form id="antrianForm" class="space-y-4">
+
+      <div id="errorMSG" class="error-msg" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
       <!-- Nama Satker -->
       <div class="relative rounded-xl">
-        <input type="text" id="nama" name="nama" placeholder=" " class="input input-bordered w-full p-2 border rounded" autocomplete="off"/>
-        <label class="floating-label text-black">Nama Satker</label>
+        <input type="text" id="nama" name="nama" placeholder=" " class="form-input" autocomplete="off"/>
+        <label class="floating-label">Nama Satker</label>
         <ul id="namaSuggestions" 
-            class="absolute left-0 right-0 bg-white border rounded shadow max-h-48 overflow-y-auto hidden z-50"></ul>
+            class="suggestions-dropdown hidden"></ul>
       </div>
 
       <!-- Kode Satker -->
       <div class="relative">
-        <input type="text" id="kode" name="kode" placeholder=" " class="input input-bordered w-full p-2 border rounded" autocomplete="off">
-        <label class="floating-label text-black">Kode Satker</label>
+        <input type="text" id="kode" name="kode" placeholder=" " class="form-input" autocomplete="off">
+        <label class="floating-label">Kode Satker</label>
         <ul id="kodeSuggestions" 
-            class="absolute left-0 right-0 bg-white border rounded shadow max-h-48 overflow-y-auto hidden z-50"></ul>
+            class="suggestions-dropdown hidden"></ul>
       </div>
 
     <div class="relative">
-      <input type="tel" id="handphone" placeholder=" " required pattern="^08[0-9]{8,11}$" class="input input-bordered w-full p-2 border rounded">
-      <label class="floating-label text-black">Nomor HP</label>
+      <input type="number" id="handphone" placeholder=" " class="form-input">
+      <label class="floating-label">Nomor HP</label>
     </div>
 
     <div class="relative">
-      <textarea id="deskripsi" placeholder=" " class="input input-bordered w-full p-2 border rounded"></textarea>
-      <label class="floating-label text-black">Deskripsi</label>
+      <textarea id="deskripsi" placeholder=" " class="form-input"></textarea>
+      <label class="floating-label">Konsultasi</label>
     </div>
+
       <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Submit</button>
     </form>
 
@@ -218,11 +286,31 @@ form button[type="submit"]:hover {
   const form = document.getElementById("antrianForm");
   const successDiv = document.getElementById("success");
   const h1 = document.getElementById("header");
+  let errorTimer = null;
 
   const namaInput = document.getElementById("nama");
   const kodeInput = document.getElementById("kode");
   const namaSuggestions = document.getElementById("namaSuggestions");
   const kodeSuggestions = document.getElementById("kodeSuggestions");
+
+  // Show error message
+  function showError(message) {
+    const errorMSG = document.getElementById("errorMSG");
+    errorMSG.textContent = message;
+
+    // reset classes
+    errorMSG.classList.remove("hide");
+    void errorMSG.offsetWidth; // reflow to restart transition
+    errorMSG.classList.add("show");
+
+    if (errorTimer) clearTimeout(errorTimer);
+
+    // hide after 3s
+    errorTimer = setTimeout(() => {
+      errorMSG.classList.remove("show");
+      errorMSG.classList.add("hide");
+    }, 3000);
+  }
 
   // Fetch Nama Satker suggestions
   async function fetchNamaSuggestions(query) {
@@ -289,11 +377,11 @@ form button[type="submit"]:hover {
   // Attach events with debounce
   namaInput.addEventListener("input", debounce((e) => {
     fetchNamaSuggestions(e.target.value);
-  }, 300));
+  }, 50));
 
   kodeInput.addEventListener("input", debounce((e) => {
     fetchKodeSuggestions(e.target.value);
-  }, 300));
+  }, 50));
 
   // Hide suggestions if clicked outside
   document.addEventListener("click", (e) => {
@@ -305,7 +393,6 @@ form button[type="submit"]:hover {
     }
   });
 
-
     // 🔹 Submit form
     form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -314,6 +401,23 @@ form button[type="submit"]:hover {
     const kode = kodeInput.value;
     const phone = document.getElementById("handphone").value;
     const deskripsi = document.getElementById("deskripsi").value;
+
+    const errorMSG = document.getElementById("errorMSG");
+
+    if (!nama || !kode || !phone || !deskripsi) {
+      showError("Harap Isi Semua Kolom!");
+      return;
+    }
+
+    if (kode.length < 6) {
+      showError("Kode Satker tidak valid! (Minimal 6 karakter)");
+      return;
+    }
+
+    if (!/^08\d*$/.test(phone)) {
+      showError("Nomor HP tidak valid! (Harus diawali 08)");
+      return;
+    }
 
     const { data ,error } = await supabaseClient
       .from("antrian")
