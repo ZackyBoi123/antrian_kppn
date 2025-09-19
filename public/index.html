@@ -7,22 +7,47 @@
   <link rel="stylesheet" href="output.css">
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script defer src="/_vercel/insights/script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
+  background: linear-gradient(290deg,  #b6b692 1%,#E1BB80 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 20px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(#E1BB80 1px, transparent 1px),
+    linear-gradient(90deg, #D6D6B1 1px, transparent 1px);
+  background-size: 175px 175px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 h1 {
 	text-align: center;
-	color: #2563eb;
+  background: linear-gradient(135deg, #ffffff 75%,  #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;	
 	font-size: 2rem;
-	margin-bottom: 0.75rem;
+	margin-bottom: 1.75rem;
 	letter-spacing: 1px;
+}
+
+.form-card {
+  background: linear-gradient(320deg, #E1BB80 10%, #806443 100%);
 }
 
 form label {
@@ -43,23 +68,35 @@ form textarea {
 	transition: border 0.2s;
 }
 
-form button[type="submit"] {
-	background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
-	color: #fff;
-	border: none;
-	padding: 0.8rem 0;
-	border-radius: 8px;
-	font-size: 1.1rem;
-	font-weight: 600;
-	cursor: pointer;
-	transition: background 0.2s, transform 0.1s;
-	box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+.submit-btn {
+   width: 100%;
+   background: linear-gradient(135deg, #6dc761 0%, #53a153 100%);
+   color: #ffffff;
+   border: none;
+   padding: 1.25rem;
+   border-radius: 16px;
+   font-size: 1.1rem;
+   font-weight: 700;
+   cursor: pointer;
+   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   box-shadow: 
+     0 10px 25px rgba(0, 0, 0, 0.3),
+     0 0 0 1px rgba(255, 255, 255, 0.1);
+   position: relative;
+   overflow: hidden;
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
 }
-
-form button[type="submit"]:hover {
-	background: linear-gradient(90deg, #1d4ed8 60%, #3b82f6 100%);
-	transform: translateY(-2px) scale(1.03);
-}
+ .submit-btn::before {
+   content: '';
+   position: absolute;
+   top: 0;
+   left: -100%;
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+   transition: left 0.5s;
+ }
 
 /* Suggestions dropdown */
 .suggestions-dropdown {
@@ -67,7 +104,8 @@ form button[type="submit"]:hover {
   top: 90%;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(212, 177, 99, 0.726);
+  color: #ffff;
   backdrop-filter: blur(20px);
   border-radius: 16px;
   border: 1px solid rgba(102, 126, 234, 0.1);
@@ -105,12 +143,12 @@ form button[type="submit"]:hover {
 }
 
 .suggestions-dropdown::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 2px;
 }
 
 .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.5);
+  background: rgba(224, 189, 114, 0.5);
 }
 
 #success {
@@ -141,42 +179,58 @@ form button[type="submit"]:hover {
 }
 
 .form-input {
-  width: 100%;
-  padding: 1rem 1.25rem;
-  border: 2px solid rgba(102, 126, 234, 0.1);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  outline: none;
-  backdrop-filter: blur(10px);
+   width: 100%;
+   padding: 1.25rem 1.5rem;
+   border: 2px solid rgba(255, 255, 255, 0.1);
+   border-radius: 16px;
+   background: rgba(255, 255, 255, 0.1);
+   font-size: 1rem;
+   font-weight: 500;
+   color: #ffffff;
+   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   outline: none;
+   backdrop-filter: blur(10px);
+   position: relative;
 }
-
+ .form-input::placeholder {
+   color: rgba(255, 255, 255, 0.5);
+}
  .form-input:focus {
-   border-color: #667eea;
-   background: rgba(255, 255, 255, 0.95);
+   border-color: rgba(255, 255, 255, 0.4);
+   background: rgba(255, 255, 255, 0.15);
    box-shadow: 
-     0 0 0 4px rgba(102, 126, 234, 0.1),
-     0 4px 16px rgba(102, 126, 234, 0.15);
+     0 0 0 4px rgba(255, 255, 255, 0.1),
+     0 8px 32px rgba(0, 0, 0, 0.15);
    transform: translateY(-2px);
 }
  .form-input:not(:placeholder-shown) {
-  border-color: #667eea;
+   border-color: rgba(255, 255, 255, 0.3);
+   background: rgba(255, 255, 255, 0.12);
 }
-    
-.form-input:focus + .floating-label,
-.form-input:not(:placeholder-shown) + .floating-label {
-  top: -12px;
-  left: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #667eea;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 0 8px;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
+ .floating-label {
+   position: absolute;
+   left: 1.5rem;
+   top: 1.25rem;
+   font-size: 1rem;
+   font-weight: 500;
+   color: rgba(255, 255, 255, 0.7);
+   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   pointer-events: none;
+   background: transparent;
 }
+ .form-input:focus + .floating-label,
+ .form-input:not(:placeholder-shown) + .floating-label {
+   top: -12px;
+   left: 1rem;
+   font-size: 0.875rem;
+   font-weight: 600;
+   color: #ffffff;
+   background: linear-gradient(130deg, #7B6B43 ,#E1BB80);
+   padding: 4px 12px;
+   border-radius: 8px;
+   backdrop-filter: blur(10px);
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+ }
 
 @media (max-width: 600px) {
   form textarea {
@@ -191,17 +245,21 @@ form button[type="submit"]:hover {
 
 /* start hidden (removed from flow) */
 .error-msg {
-  display: none;                 /* removed from layout when hidden */
+  display: none;
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(-10px);
   transition: opacity 280ms ease, transform 280ms ease;
   max-width: 100%;
   font-size: 1.05rem;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
-  background: rgba(220, 38, 38, 0.08);
-  color: #b91c1c;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+  color: #ffff;
   font-weight: 600;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
 }
 
 /* visible state — animates in */
@@ -213,13 +271,11 @@ form button[type="submit"]:hover {
 
   </style>
 </head>
-<body class="flex items-center justify-center h-screen bg-gray-300">
-  <div class="bg-white p-6 m-6 rounded-xl shadow-md w-full max-w-md">
+<body class="flex items-center justify-center h-screen">
+  <div class="form-card p-6 m-6 rounded-xl shadow-md w-full max-w-md">
 
     <h1 id="header" class="text-3xl font-bold text-center">Form Antrian</h1>
     <form id="antrianForm" class="space-y-4">
-
-      <div id="errorMSG" class="error-msg hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
       <!-- Nama Satker -->
       <div class="relative rounded-xl">
@@ -247,7 +303,9 @@ form button[type="submit"]:hover {
       <label class="floating-label">Konsultasi</label>
     </div>
 
-      <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Submit</button>
+    <div id="errorMSG" class="error-msg hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+      <button type="submit" class="submit-btn">Submit</button>
     </form>
 
     <!-- Success State -->
