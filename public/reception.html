@@ -77,6 +77,9 @@
         position: sticky;
         top: 0;
         z-index: 10;
+        background: rgba(30, 41, 59, 0.95); /* Slightly more opaque for better visibility */
+        backdrop-filter: blur(20px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add shadow when scrolling */
       }
 
       .modern-table th {
@@ -227,6 +230,15 @@
         overflow: hidden;
         box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
         position: relative;
+        max-height: 100vh; /* Set maximum height */
+      }
+
+      /* Table wrapper for scrolling */
+      .table-wrapper {
+        max-height: 60vh;       /* Maximum height before scrolling */
+        overflow-y: auto;       /* Enable vertical scrolling */
+        overflow-x: auto;       /* Enable horizontal scrolling for mobile */
+        border-radius: 20px;    /* Match container border radius */
       }
 
       .table-container::before {
@@ -236,6 +248,38 @@
         left: 0;
         right: 0;
         height: 4px;
+      }
+
+      /* Custom scrollbar styling */
+      .table-wrapper::-webkit-scrollbar {
+        width: 8px; /* Width of vertical scrollbar */
+        height: 8px; /* Height of horizontal scrollbar */
+      }
+
+      .table-wrapper::-webkit-scrollbar-track {
+        background: rgba(148, 163, 184, 0.1); /* Track color */
+        border-radius: 4px;
+      }
+
+      .table-wrapper::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%); /* Scrollbar color */
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+
+      .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); /* Darker on hover */
+        box-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+      }
+
+      .table-wrapper::-webkit-scrollbar-corner {
+        background: rgba(148, 163, 184, 0.1); /* Corner where scrollbars meet */
+      }
+
+      /* For Firefox */
+      .table-wrapper {
+        scrollbar-width: thin;
+        scrollbar-color: #60a5fa rgba(148, 163, 184, 0.1);
       }
 
       @media (max-width: 1024px) {
@@ -337,28 +381,26 @@
         <div class="stat-number" id="totalToday">0</div>
         <div class="stat-label">Total Hari Ini</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-number" id="currentQueue">-</div>
-        <div class="stat-label">Antrian Saat Ini</div>
-      </div>
     </div>
 
     <!-- Table Section -->
     <div class="table-container">
-    <table class="modern-table" id="antrianTable">      
-      <thead>
-        <tr>
-          <th>No Antrian</th>
-          <th>Nama Satker</th>
-          <th>Kode Satker</th>
-          <th>Nomor HP</th>
-          <th>Konsultasi</th>
-          <th>Waktu</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+      <div class="table-wrapper">
+        <table class="modern-table" id="antrianTable">      
+          <thead>
+            <tr>
+              <th>No Antrian</th>
+              <th>Nama Satker</th>
+              <th>Kode Satker</th>
+              <th>Nomor HP</th>
+              <th>Konsultasi</th>
+              <th>Waktu</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
   
       <!-- Empty State -->
       <div id="emptyState" class="empty-state hidden">
@@ -385,11 +427,8 @@
 
       function updateStats() {
         const total = queueData.length;
-        const latest = queueData[queueData.length - 1];
         
         totalTodayEl.textContent = total;
-        currentQueueEl.textContent = latest ? latest.nomor_antrian : '-';
-        
       }
 
       function formatTime(dateString) {
