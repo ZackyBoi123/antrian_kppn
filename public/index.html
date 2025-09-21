@@ -68,6 +68,14 @@ form textarea {
 	transition: border 0.2s;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .submit-btn {
    width: 100%;
    background: linear-gradient(135deg, #6dc761 0%, #53a153 100%);
@@ -101,7 +109,7 @@ form textarea {
 /* Suggestions dropdown */
 .suggestions-dropdown {
   position: absolute;
-  top: 90%;
+  top: 100%;
   left: 0;
   right: 0;
   background: rgba(212, 177, 99, 0.726);
@@ -311,7 +319,7 @@ form textarea {
     <!-- Success State -->
     <div id="success" class="hidden text-center">
       <p class="text-white">Nomor Antrian Anda:</p>
-      <div id="nomorDisplay" class="text-5xl font-bold text-orange-300 mt-2 mb-2"></div>
+      <div id="nomorDisplay" class="text-5xl font-bold text-orange-500 mt-2 mb-2"></div>
       <p class="text-lg font-semibold mt-2 text-white">Terima kasih, data berhasil dikirim!</p>
     </div>
   </div>
@@ -475,11 +483,11 @@ function hideError(el) {
   // Attach events with debounce
   namaInput.addEventListener("input", debounce((e) => {
     fetchNamaSuggestions(e.target.value);
-  }, 50));
+  }, 275));
 
   kodeInput.addEventListener("input", debounce((e) => {
     fetchKodeSuggestions(e.target.value);
-  }, 50));
+  }, 275));
 
   // Hide suggestions if clicked outside
   document.addEventListener("click", (e) => {
