@@ -1,1 +1,1 @@
-"# antrian_kppn" 
+Antrian KPPN adalah website yang bertujuan untuk menciptakan layanan publik yang lebih efektif, adil, transparan, dan berbasis data, sehingga mendukung peningkatan mutu pelayanan kepada masyarakat. Website ini digunakan pada GKN, tepatnya pada KPPN (Kantor Pelayanan Perbendaharaan Negera) Jayapura. 
