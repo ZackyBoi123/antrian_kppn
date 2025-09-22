@@ -76,6 +76,23 @@ input[type="number"] {
   margin: 0;
 }
 
+/* Style the scrollbar thumb (the draggable part) */
+textarea::-webkit-scrollbar-thumb {
+  background-color: black; /* Change to your preferred color */
+  border-radius: 6px; /* Rounded corners */
+}
+
+/* Style the scrollbar track (the background of the scrollbar) */
+textarea::-webkit-scrollbar-track {
+  background-color: black; /* Change to your preferred color */
+}
+
+/* For Firefox, use scrollbar-width and scrollbar-color */
+textarea {
+  scrollbar-width: thin; /* auto, thin, none */
+  scrollbar-color: black; /* thumb color track color */
+}
+
 .submit-btn {
    width: 100%;
    background: linear-gradient(135deg, #6dc761 0%, #53a153 100%);
@@ -277,40 +294,106 @@ input[type="number"] {
   transform: translateY(0);
 }
 
+/* Shared base style */
+.image-container {
+  position: fixed;
+  top: 16px;
+  width: 96px;
+  height: auto;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Position variants */
+.left-logo {
+  left: 16px;
+}
+
+.right-logo {
+  right: 16px;
+}
+
+/* Responsive tweaks for small screens */
+@media (max-width: 640px) {
+  .image-container {
+    top: 12px;
+  }
+
+  .left-logo { 
+    left: 12px; 
+    width: 125px;
+  }
+
+  .right-logo { 
+    right: 12px; 
+    width: 56px;
+  }
+}
+
+/* Larger logo for desktops */
+@media (min-width: 1024px) {
+  .image-container {
+    width: 140px;
+    top: 24px;
+  }
+  .left-logo { left: 24px; }
+  .right-logo { right: 24px; }
+  .form-card { margin-top: 0; }
+}
   </style>
 </head>
 <body class="flex items-center justify-center h-screen">
-  <div class="form-card p-6 m-6 rounded-xl shadow-md w-full max-w-md">
 
+<div class="image-container left-logo">
+  <img src="images/LOGO_KPPN_JAYAPURA_FIX.png" alt="Logo KPPN Jayapura">
+</div>
+
+<div class="image-container right-logo">
+  <img src="images/logo-kementerian-keuangan-356.png" alt="Second Logo">
+</div>
+
+  <div class="form-card p-6 m-6 rounded-xl shadow-md w-full max-w-md">
+    
     <h1 id="header" class="text-3xl font-bold text-center">Form Antrian</h1>
     <form id="antrianForm" class="space-y-4">
 
-      <!-- Nama Satker -->
-      <div class="relative rounded-xl">
-        <input type="text" id="nama" name="nama" placeholder=" " class="form-input" autocomplete="off"/>
-        <label class="floating-label">Nama Satker</label>
-        <ul id="namaSuggestions" 
-            class="suggestions-dropdown hidden"></ul>
-      </div>
+    <!-- Kode Satker -->
+    <div class="relative">
+      <input type="text" id="kode" name="kode" placeholder=" " class="form-input" autocomplete="off">
+      <label class="floating-label">Kode Satker</label>
+      <ul id="kodeSuggestions" 
+          class="suggestions-dropdown hidden"></ul>
+    </div>
+    <!-- Nama Satker -->
+    <div class="relative rounded-xl">
+      <input type="text" id="nama" name="nama" placeholder=" " class="form-input" autocomplete="off"/>
+      <label class="floating-label">Nama Satker</label>
+      <ul id="namaSuggestions" 
+      class="suggestions-dropdown hidden"></ul>
+    </div>
 
-      <!-- Kode Satker -->
-      <div class="relative">
-        <input type="text" id="kode" name="kode" placeholder=" " class="form-input" autocomplete="off">
-        <label class="floating-label">Kode Satker</label>
-        <ul id="kodeSuggestions" 
-            class="suggestions-dropdown hidden"></ul>
-      </div>
-
+    <!-- Nomor HP -->
     <div class="relative">
       <input type="number" id="handphone" placeholder=" " class="form-input">
       <label class="floating-label">Nomor HP</label>
     </div>
 
+    <!-- Keperluan -->
     <div class="relative">
       <textarea id="deskripsi" placeholder=" " class="form-input"></textarea>
-      <label class="floating-label">Konsultasi</label>
-    </div>
+      <label class="floating-label">Keperluan</label>
+    </div>  
 
+    <!-- Error Message  -->
     <div id="errorMSG" class="error-msg hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
       <button type="submit" class="submit-btn">Submit</button>

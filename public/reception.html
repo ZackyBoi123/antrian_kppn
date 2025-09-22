@@ -6,6 +6,7 @@
     <title>Data Antrian</title>
     <link rel="stylesheet" href="output.css">
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
       /* Import font */
       @import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
@@ -41,14 +42,14 @@
       }
 
       /* Header */
-      .dashboard-header {
+      /* .dashboard-header {
         text-align: center;
         margin-bottom: 1.50rem;
         position: relative;
-      }
+      } */
 
       /* Judul */
-      .judul {
+      /* .judul {
         font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: 800;
         background: linear-gradient(135deg, #ffffff 75%,  #ffffff 100%);
@@ -63,7 +64,7 @@
       @keyframes titleGlow {
         0% { text-shadow: 0 0 40px rgba(96, 165, 250, 0.3); }
         100% { text-shadow: 0 0 60px rgba(167, 139, 250, 0.4), 0 0 80px rgba(96, 165, 250, 0.2); }
-      }
+      } */
 
       /* Table styles */
       .modern-table {
@@ -152,7 +153,6 @@
         padding: 0.75rem 1.5rem;
         border-radius: 12px;
         font-weight: 600;
-        font-size: 0.875rem;
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
@@ -193,7 +193,7 @@
       /* Time formatting */
       .time-display {
         font-family: 'Monaco', 'Menlo', monospace;
-        font-size: 0.9rem;
+        font-size: 1.09rem;
         color: #ccc5c5;
       }
 
@@ -294,23 +294,23 @@
       }
 
       @media (max-width: 2440px) {
-        .modern-table td {
-          padding: 1rem 0.5rem;
-          font-size: 1.3rem;
-        }
-
         .modern-table th {
           padding: 1rem 0.5rem;
           font-size: 1.50rem;
         }
+        
+        .modern-table td {
+          padding: 1rem 0.5rem;
+          font-size: 1.3rem;
+        }
       }
-
+      
       /* Stats cards */
       .stats-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1.5rem;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
       }
 
       .stat-card {
@@ -356,13 +356,174 @@
         font-weight: 600;
       }
 
+      /* Control Panel Styling */
+      .control-panel {
+        background: #806443;
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 4px 10px 24px rgba(0, 0, 0, 0.15);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        overflow: hidden;
+      }
+
+      .control-panel::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+        transform: rotate(45deg);
+        transition: transform 0.6s;
+      }
+
+      .control-panel label {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Custom Dropdown Styling */
+      .custom-select {
+        background: linear-gradient(135deg, #806443 0%, #685634 100%);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 1rem 2.5rem 1rem 1.5rem;
+        font-size: 1.30rem;
+        font-weight: 600;
+        min-width: 200px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        appearance: none;
+        background-image: 
+          linear-gradient(45deg, transparent 50%, white 50%),
+          linear-gradient(135deg, white 50%, transparent 50%);
+        background-position: 
+          calc(100% - 20px) calc(1rem + 13px),
+          calc(100% - 15px) calc(1rem + 13px);
+        background-size: 5px 5px, 5px 5px;
+        background-repeat: no-repeat;
+      }
+
+      .custom-select:focus {
+        outline: none;
+        border-color: #E1BB80;
+        box-shadow: 0 0 0 3px rgba(225, 187, 128, 0.3);
+      }
+
+      .custom-select option {
+        background: #685634;
+        color: white;
+        padding: 1rem;
+      }
+
+      /* Download Button Enhancement */
+      #downloadBtn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.6rem;
+      }
+
+      #downloadBtn:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+      }
+
+      #downloadBtn::before {
+        content: '📊';
+        font-size: 1.6rem;
+      }
+
+      /* Loading state */
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+        position: relative;
+      }
+
+      .loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid transparent;
+        border-top: 2px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* Toast notification */
+      #toast {
+        position: fixed;
+        bottom: 13px;
+        left: 50%;
+        min-width: 200px;
+        max-width: 90vw;
+        font-size: 1.75rem;
+        width: auto;
+        right: auto;
+        margin: 0 auto;
+        text-align: center;
+        background: #806443;
+        color: white;
+        padding: 14px 22px;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 6px 12px rgba(59,130,246,0.4);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-50%) translateY(50%);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 10500;
+      }
+
+      #toast.show {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .control-panel {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .custom-select {
+          min-width: 100%;
+        }
+      }
+
     </style>
   </head>
   <body>
     <!-- Header Section -->
-    <div class="dashboard-header">
+    <!-- <div class="dashboard-header">
       <h1 class="judul">DAFTAR ANTRIAN</h1>
-    </div>
+    </div> -->
 
     <!-- Stats Section -->
     <div class="stats-container" id="statsContainer">
@@ -370,6 +531,20 @@
         <div class="stat-number" id="totalToday">0</div>
         <div class="stat-label">Total Hari Ini</div>
       </div>
+      
+      <div class="stat-card">
+        <div class="stat-number" id="totalMonth">0</div>
+        <div class="stat-label">Total Bulan Ini</div>
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <label for="monthSelect" class="month-select">Pilih Bulan:</label>
+      <select id="monthSelect" class="custom-select">
+        <!-- JS will fill this -->
+      </select>
+      <button id="downloadBtn">Download Excel</button>
     </div>
 
     <!-- Table Section -->
@@ -379,10 +554,10 @@
           <thead>
             <tr>
               <th>No Antrian</th>
-              <th>Nama Satker</th>
               <th>Kode Satker</th>
+              <th>Nama Satker</th>
               <th>Nomor HP</th>
-              <th>Konsultasi</th>
+              <th>Keperluan</th>
               <th>Waktu</th>
               <th>Action</th>
             </tr>
@@ -399,6 +574,14 @@
       </div>
     </div>
 
+    <div class="text-center text-black/70 mt-4">
+        <small>
+            <span class="text-2xl">© 2025 Efraim, KPPN Jayapura. All Rights Reserved</span>
+        </small>
+    </div>
+
+    <div id="toast" role="alert" aria-live="polite" aria-atomic="true"></div>
+
     <script>
       const { createClient } = supabase;
       const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
@@ -409,30 +592,78 @@
       const emptyState = document.getElementById("emptyState");
       const today = new Date().toISOString().split("T")[0];
       let queueData = [];
+      let monthlyData = [];
 
       // Stats elements
       const totalTodayEl = document.getElementById("totalToday");
-      const currentQueueEl = document.getElementById("currentQueue");
+      const totalMonthEl = document.getElementById("totalMonth");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      // Load monthly data for stats
+      async function loadMonthlyData() {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+
+        const { data, error } = await supabaseClient
+          .from("antrian")
+          .select("*")
+          .gte("created_at", startOfMonth)
+          .lte("created_at", endOfMonth);
+
+        if (!error && data) {
+          monthlyData = data;
+        }
+      }
 
       function updateStats() {
-        const total = queueData.length;
+        const todayTotal = queueData.length;
+        const monthTotal = monthlyData.length;
         
-        totalTodayEl.textContent = total;
+        totalTodayEl.textContent = todayTotal;
+        totalMonthEl.textContent = monthTotal;
+      }
+
+      function showToast(msg){
+        const toast = document.getElementById("toast");
+        toast.textContent = msg;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2325);
       }
 
       function formatTime(dateString) {
         const date = new Date(dateString);
-        const day = date.toLocaleDateString("en-US", {
-          month: "short",
+        const day = date.toLocaleDateString("id-ID", {
           day: "numeric",
+          month: "short",
         });
-        const time = date.toLocaleTimeString("en-US", {
-          hour: "numeric",
+        const time = date.toLocaleTimeString("id-ID", {
+          hour: "2-digit",
           minute: "2-digit",
           hour12: true,
         });
         return `${day}<br><span class="time-display">${time}</span>`;
       }
+
+      const monthSelect = document.getElementById("monthSelect");
+
+      // Fill dropdown with the last 12 months
+      function populateMonths() {
+        const now = new Date();
+        for (let i = 0; i < 12; i++) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          const label = d.toLocaleDateString("id-ID", { year: "numeric", month: "long" });
+          const opt = document.createElement("option");
+          opt.value = value;
+          opt.textContent = label;
+          if (i === 0) opt.selected = true; // default = current month
+          monthSelect.appendChild(opt);
+        }
+      }
+      populateMonths();
 
       function addRow(row, isNew = false) {
         const timeFormatted = formatTime(row.created_at);
@@ -443,15 +674,14 @@
 
         tr.innerHTML = `
           <td class="text-center">${row.nomor_antrian}</td>
-          <td class="text-center">${row.nama}</td>
           <td class="text-center">${row.kode}</td>
+          <td class="text-center">${row.nama}</td>
           <td class="text-center">${row.phone}</td>
           <td class="text-center">${row.deskripsi || ""}</td>
           <td class="text-center">${timeFormatted}</td>
           <td class="text-center">
-            <button onclick='printAntrian(${JSON.stringify(
-              row
-            )})' class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
+            <button onclick='printAntrian(${JSON.stringify(row).replace(/'/g, "\\'")})'
+                    class="bg-green-500 text-white px-2 py-1 rounded">Print</button>
           </td>
         `;
 
@@ -466,9 +696,6 @@
 
         if (isNew) {
           tr.scrollIntoView({ behavior: "smooth", block: "center" });
-          // Add pulse effect temporarily
-          // tr.classList.add("pulse-glow");
-          // setTimeout(() => tr.classList.remove("pulse-glow"), 3000);
         }
       }
 
@@ -477,12 +704,12 @@
           .from("antrian")
           .select("*")
           .gte("created_at", `${today}T00:00:00`)
-          .lt("created_at", `${today}T23:59:59`)
+          .lte("created_at", `${today}T23:59:59`)
           .order("created_at", { ascending: false });
 
         if (error) {
           console.error(error);
-          return
+          return;
         }
 
         queueData = data;
@@ -498,7 +725,6 @@
         updateStats();
       }
 
-
       function printAntrian(row) {
         const w = window.open("", "_blank", "width=400,height=400");
 
@@ -506,26 +732,153 @@
           year: "numeric",
           month: "long",
           day: "numeric",
-          hour: "numeric",
+          hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: false,
         });
 
         w.document.write(`
-        <div style="font-family: sans-serif; text-align: center; margin-top: 40px; padding: 10px; justify-content: center;">
+        <div style="font-family: sans-serif; text-align: center; margin-top: 80px; padding: 10px; justify-content: center;">
           <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 20px;">Nomor Antrian</h1>
-          <div style="font-size: 50px; font-weight: bold; margin-bottom: 30px;">${row.nomor_antrian}</div>
-          <p style="font-size: 18px; margin: 5px 0;"> ${row.kode}</p>
-          <p style="font-size: 18px; margin: 5px 0;"> ${row.deskripsi || "-"}</p>
-          <p style="font-size: 18px; margin: 5px 0;"> ${tanggal}</p>
+          <div style="font-size: 50px; font-weight: bold; margin-bottom: 25px;">${row.nomor_antrian}</div>
+          <p style="font-size: 18px; margin: 5px 0; font-weight: bold;">${row.kode}</p>
+          <p style="font-size: 18px; margin: 5px 0; font-weight: bold;">${row.nama}</p>
+          <p style="font-size: 18px; margin: 5px 0;">${row.deskripsi || "-"}</p>
+          <p style="font-size: 16px; margin: 5px 0;">${tanggal}</p>
         </div>
-      `);
-            w.print();
+        `);
+        setTimeout(() => w.print(), 500);
+      }
+
+      async function downloadMonthData(monthValue) {
+        // Add loading state
+        downloadBtn.classList.add('loading');
+        downloadBtn.textContent = 'Downloading...';
+
+        try {
+          const [year, month] = monthValue.split("-");
+          
+          // Calculate start and end dates properly
+          const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+          const endDate = new Date(parseInt(year), parseInt(month), 0, 23, 59, 59);
+          
+          const startStr = startDate.toISOString();
+          const endStr = endDate.toISOString();
+
+          console.log(`Selected month: ${monthValue}`);
+          console.log(`Fetching data from ${startStr} to ${endStr}`);
+
+          // First, let's check what data exists in the table for debugging
+          const { data: allData, error: debugError } = await supabaseClient
+            .from("antrian")
+            .select("created_at")
+            .order("created_at", { ascending: false })
+            .limit(10);
+
+          if (!debugError && allData) {
+            console.log("Recent entries in database:", allData.map(item => item.created_at));
           }
 
+          // Try a simpler approach first - just get all data for the year-month
+          const { data, error } = await supabaseClient
+            .from("antrian")
+            .select("nomor_antrian, kode, nama, phone, deskripsi, created_at")
+            .gte("created_at", `${year}-${month}-01T00:00:00.000Z`)
+            .lt("created_at", `${year}-${String(parseInt(month) + 1).padStart(2, '0')}-01T00:00:00.000Z`)
+            .order("created_at", { ascending: true });
+
+          console.log(`Query result:`, { dataLength: data?.length || 0, error });
+
+          if (error) {
+            console.error("Supabase error:", error);
+            showToast("Error mengambil data: " + error.message);
+            return;
+          }
+
+          if (!data || data.length === 0) {
+            // Show more detailed debug info
+            console.log("No data found. Let's check what's available:");
+            
+            // Check if there's any data in the table at all
+            const { data: anyData, error: anyError } = await supabaseClient
+              .from("antrian")
+              .select("created_at")
+              .limit(5);
+              
+            if (!anyError && anyData) {
+              console.log("Available data samples:", anyData);
+              const dates = anyData.map(item => new Date(item.created_at).toLocaleDateString('id-ID'));
+              showToast(`Tidak ada data untuk ${monthValue}.`);
+            } else {
+              showToast("Tidak ada data dalam database atau terjadi error.");
+            }
+            return;
+          }
+
+          console.log(`Found ${data.length} records for ${monthValue}`);
+
+          // Format data for Excel
+          const formattedData = data.map(row => ({
+            'No Antrian': row.nomor_antrian,
+            'Kode Satker': row.kode,
+            'Nama Satker': row.nama,
+            'Nomor HP': row.phone,
+            'Keperluan': row.deskripsi || '',
+            'Tanggal': new Date(row.created_at).toLocaleDateString('id-ID'),
+            'Waktu': new Date(row.created_at).toLocaleTimeString('id-ID', { 
+              hour12: false,
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          }));
+
+          // Create Excel workbook
+          const worksheet = XLSX.utils.json_to_sheet(formattedData);
+          
+          // Set column widths
+          const colWidths = [
+            { wch: 12 }, // No Antrian
+            { wch: 15 }, // Kode Satker
+            { wch: 30 }, // Nama Satker
+            { wch: 15 }, // Nomor HP
+            { wch: 30 }, // Keperluan
+            { wch: 12 }, // Tanggal
+            { wch: 8 }   // Waktu
+          ];
+          worksheet['!cols'] = colWidths;
+
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, "Data Antrian");
+
+          // Generate filename
+          const monthName = new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('id-ID', { 
+            year: 'numeric', 
+            month: 'long' 
+          });
+          const filename = `Antrian_${monthName.replace(' ', '_')}.xlsx`;
+
+          // Download file
+          XLSX.writeFile(workbook, filename);
+          
+          // Show success message
+          showToast(`Data berhasil didownload!\nTotal: ${data.length} entri untuk ${monthName}`);
+
+        } catch (err) {
+          console.error("Download error:", err);
+          showToast("Terjadi kesalahan saat download: " + err.message);
+        } finally {
+          // Remove loading state
+          downloadBtn.classList.remove('loading');
+          downloadBtn.textContent = 'Download Excel';
+        }
+      }
+
       async function init() {
-        // Initial load (today’s data)
-        await loadAntrian();
+        // Load today's data and monthly data
+        await Promise.all([
+          loadAntrian(),
+          loadMonthlyData()
+        ]);
 
         // Subscribe to real-time changes
         supabaseClient
@@ -539,13 +892,37 @@
                 if (rowDate === today) {
                   queueData.unshift(row);
                   addRow(row, true);
+                  
+                  // Also add to monthly data if it's current month
+                  const now = new Date();
+                  const rowMonth = new Date(row.created_at);
+                  if (rowMonth.getMonth() === now.getMonth() && 
+                      rowMonth.getFullYear() === now.getFullYear()) {
+                    monthlyData.push(row);
+                  }
+                  
                   updateStats();
                 }
               }
           )
           .subscribe();
+
       }
 
+      // Hook download button
+      downloadBtn.addEventListener("click", () => {
+        const monthValue = monthSelect.value;
+        if (!monthValue) {
+          showToast("Silakan pilih bulan terlebih dahulu.");
+          return;
+        }
+        downloadMonthData(monthValue);
+      });
+
+      // Make printAntrian globally available
+      window.printAntrian = printAntrian;
+
+      // Initialize the application
       init();
 
     </script>
