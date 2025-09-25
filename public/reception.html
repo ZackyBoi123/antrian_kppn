@@ -414,6 +414,15 @@
         background-repeat: no-repeat;
       }
 
+
+
+
+
+
+
+
+
+      
       .custom-select:focus {
         outline: none;
         border-color: #E1BB80;
@@ -698,12 +707,47 @@
         }
       }
 
+      // Helper to get today's range based on 7 AM reset in Jayapura (UTC+9)
+      function getJayapuraDayRange() {
+        const tzOffset = 9 * 60; // Jayapura UTC+9
+        const now = new Date();
+
+        // Figure out today's "7 AM start"
+        const start = new Date(now);
+        start.setUTCHours(0, 0, 0, 0); // reset to UTC midnight
+        start.setMinutes(start.getMinutes() + tzOffset + 13 * 60); // shift to 7 AM Jayapura
+
+        // If current time is before today's 7 AM, use yesterday’s 7 AM as start
+        if (now < start) {
+          start.setDate(start.getDate() - 1);
+        }
+
+        // End = start + 24 hours - 1 second
+        const end = new Date(start);
+        end.setDate(start.getDate() + 1);
+        end.setSeconds(end.getSeconds() - 1);
+
+        // console.log("Jayapura Day Range:");
+        // console.log("Start (Jayapura):", start.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
+        // console.log("End   (Jayapura):", end.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
+        // console.log("Start (UTC ISO):", start.toISOString());
+        // console.log("End   (UTC ISO):", end.toISOString());
+
+        return {
+          start: start.toISOString(),
+          end: end.toISOString(),
+        };
+      }
+      
+
       async function loadAntrian() {
+        const { start, end } = getJayapuraDayRange();
+
         const { data, error } = await supabaseClient
           .from("antrian")
           .select("*")
-          .gte("created_at", `${today}T00:00:00`)
-          .lte("created_at", `${today}T23:59:59`)
+          .gte("created_at", start)
+          .lte("created_at", end)
           .order("created_at", { ascending: false });
 
         if (error) {
