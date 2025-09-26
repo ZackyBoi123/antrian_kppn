@@ -707,53 +707,68 @@
         }
       }
 
-      // Helper to get today's range based on 7 AM reset in Jayapura (UTC+9)
-      function getJayapuraDayRange() {
-        const tzOffset = 9 * 60; // Jayapura UTC+9
-        const now = new Date();
+      //Function for setting up UTC+9
+      async function getJayapuraDayRange() {
+        let serverNow;
 
-        // Figure out today's "7 AM start"
-        const start = new Date(now);
+        // 1. Try to fetch server time from Supabase
+        try {
+          const { data, error } = await supabaseClient.rpc("get_server_time");
+          if (error) throw error;
+          serverNow = new Date(data);
+          console.log("Using Supabase server time:", serverNow.toISOString());
+        } catch (err) {
+          console.warn("Falling back to local time:", err.message);
+          serverNow = new Date();
+        }
+
+        // 2. Define Jayapura offset (+9 hours from UTC)
+        const jayapuraOffset = 9 * 60; // minutes
+
+        // 3. Start = today at 07:00 Jayapura
+        const start = new Date(serverNow);
         start.setUTCHours(0, 0, 0, 0); // reset to UTC midnight
-        start.setMinutes(start.getMinutes() + tzOffset + 13 * 60); // shift to 7 AM Jayapura
+        start.setMinutes(start.getMinutes() + jayapuraOffset + 7 * 60);
 
-        // If current time is before today's 7 AM, use yesterday’s 7 AM as start
-        if (now < start) {
+        // If now < 07:00 Jayapura, then use yesterday’s 07:00
+        if (serverNow < start) {
           start.setDate(start.getDate() - 1);
         }
 
-        // End = start + 24 hours - 1 second
+        // 4. End = start + 24h - 1s
         const end = new Date(start);
         end.setDate(start.getDate() + 1);
         end.setSeconds(end.getSeconds() - 1);
 
-        // console.log("Jayapura Day Range:");
-        // console.log("Start (Jayapura):", start.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
-        // console.log("End   (Jayapura):", end.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
-        // console.log("Start (UTC ISO):", start.toISOString());
-        // console.log("End   (UTC ISO):", end.toISOString());
+        // Debug logs
+        console.log("Jayapura Day Range:");
+        console.log("Start (Jayapura):", start.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
+        console.log("End   (Jayapura):", end.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
+        console.log("Start (UTC ISO):", start.toISOString());
+        console.log("End   (UTC ISO):", end.toISOString());
 
         return {
           start: start.toISOString(),
           end: end.toISOString(),
         };
       }
-      
 
       async function loadAntrian() {
-        const { start, end } = getJayapuraDayRange();
+        const range = await getJayapuraDayRange();
 
-        const { data, error } = await supabaseClient
-          .from("antrian")
-          .select("*")
-          .gte("created_at", start)
-          .lte("created_at", end)
-          .order("created_at", { ascending: false });
+        if (range) {
+          const { data, error } = await supabaseClient
+            .from("antrian")
+            .select("*")
+            .gte("created_at", range.start)
+            .lte("created_at", range.end)
+            .order("created_at", { ascending: false });
 
-        if (error) {
-          console.error(error);
-          return;
-        }
+          if (error) {
+            console.error("Error loading today's rows:", error.message);
+          } else {
+            console.log("Today's rows:", data);
+          }
 
         queueData = data;
         tbody.innerHTML = "";
@@ -766,6 +781,7 @@
         }
 
         updateStats();
+        }
       }
 
       function printAntrian(row) {
