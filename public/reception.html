@@ -725,23 +725,22 @@
         // 2. Define Jayapura offset (+9 hours from UTC)
         const jayapuraOffset = 9 * 60; // minutes
 
-        // 3. Start = today at 07:00 Jayapura
+        // Start time
         const start = new Date(serverNow);
         start.setUTCHours(0, 0, 0, 0); // reset to UTC midnight
-        start.setMinutes(start.getMinutes() + jayapuraOffset + 7 * 60);
+        start.setMinutes(start.getMinutes() + jayapuraOffset + 13 * 60);
 
         // If now < 07:00 Jayapura, then use yesterday’s 07:00
         if (serverNow < start) {
           start.setDate(start.getDate() - 1);
         }
 
-        // 4. End = start + 24h - 1s
+        // End time
         const end = new Date(start);
         end.setDate(start.getDate() + 1);
         end.setSeconds(end.getSeconds() - 1);
 
         // Debug logs
-        console.log("Jayapura Day Range:");
         console.log("Start (Jayapura):", start.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
         console.log("End   (Jayapura):", end.toLocaleString("id-ID", { timeZone: "Asia/Jayapura" }));
         console.log("Start (UTC ISO):", start.toISOString());
