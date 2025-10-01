@@ -1,630 +1,739 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Antrian Form</title>
-  <link rel="stylesheet" href="output.css">
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script defer src="/_vercel/insights/script.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(290deg,  #b6b692 1%,#E1BB80 100%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  padding: 20px;
-  height: 100dvh;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Antrian Form</title>
+    <link rel="stylesheet" href="output.css" />
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <style>
+      body {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        background: linear-gradient(290deg, #b6b692 1%, #e1bb80 100%);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        padding: 20px;
+        height: 100dvh;
+      }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(#d6b076 1px, transparent 1px),
-    linear-gradient(90deg, #b99f5696 1px, transparent 1px);
-  background-size: 175px 175px;
-  pointer-events: none;
-  z-index: -1;
-}
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(#d6b076 1px, transparent 1px),
+          linear-gradient(90deg, #b99f5696 1px, transparent 1px);
+        background-size: 175px 175px;
+        pointer-events: none;
+        z-index: -1;
+      }
 
-h1 {
-	text-align: center;
-  background: linear-gradient(135deg, #ffffff 75%,  #ffffff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;	
-	font-size: 2rem;
-	margin-bottom: 1.75rem;
-	letter-spacing: 1px;
-}
+      h1 {
+        text-align: center;
+        background: linear-gradient(135deg, #ffffff 75%, #ffffff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 2rem;
+        margin-bottom: 1.75rem;
+        letter-spacing: 1px;
+      }
 
-.form-card {
-  background: linear-gradient(320deg, #E1BB80 10%, #806443 100%);
-}
+      .form-card {
+        background: linear-gradient(320deg, #e1bb80 10%, #806443 100%);
+      }
 
-form label {
-	display: block;
-	margin-bottom: 0.3rem;
-	color: #374151;
-	font-weight: 500;
-}
+      form label {
+        display: block;
+        margin-bottom: 0.3rem;
+        color: #374151;
+        font-weight: 500;
+      }
 
-form textarea {
-	width: 100%;
-	padding: 0.7rem 1rem;
-	border: 1px solid #d1d5db;
-	border-radius: 8px;
-	margin-bottom: 1rem;
-	font-size: 1rem;
-	background: #f9fafb;
-	transition: border 0.2s;
-}
+      form textarea {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        background: #f9fafb;
+        transition: border 0.2s;
+      }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"] {
-  -moz-appearance: textfield;
-  -webkit-appearance: none;
-  margin: 0;
-}
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"] {
+        -moz-appearance: textfield;
+        -webkit-appearance: none;
+        margin: 0;
+      }
 
-/* Style the scrollbar thumb (the draggable part) */
-textarea::-webkit-scrollbar-thumb {
-  background-color: black; /* Change to your preferred color */
-  border-radius: 6px; /* Rounded corners */
-}
+      /* Style the scrollbar thumb (the draggable part) */
+      textarea::-webkit-scrollbar-thumb {
+        background-color: black; /* Change to your preferred color */
+        border-radius: 6px; /* Rounded corners */
+      }
 
-/* Style the scrollbar track (the background of the scrollbar) */
-textarea::-webkit-scrollbar-track {
-  background-color: black; /* Change to your preferred color */
-}
+      /* Style the scrollbar track (the background of the scrollbar) */
+      textarea::-webkit-scrollbar-track {
+        background-color: black; /* Change to your preferred color */
+      }
 
-/* For Firefox, use scrollbar-width and scrollbar-color */
-textarea {
-  scrollbar-width: thin; /* auto, thin, none */
-  scrollbar-color: black; /* thumb color track color */
-}
+      /* For Firefox, use scrollbar-width and scrollbar-color */
+      textarea {
+        scrollbar-width: thin; /* auto, thin, none */
+        scrollbar-color: black; /* thumb color track color */
+      }
 
-.submit-btn {
-   width: 100%;
-   background: linear-gradient(135deg, #6dc761 0%, #53a153 100%);
-   color: #ffffff;
-   border: none;
-   padding: 1.25rem;
-   border-radius: 16px;
-   font-size: 1.1rem;
-   font-weight: 700;
-   cursor: pointer;
-   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-   box-shadow: 
-     0 10px 25px rgba(0, 0, 0, 0.3),
-     0 0 0 1px rgba(255, 255, 255, 0.1);
-   position: relative;
-   overflow: hidden;
-   text-transform: uppercase;
-   letter-spacing: 0.5px;
-}
- .submit-btn::before {
-   content: '';
-   position: absolute;
-   top: 0;
-   left: -100%;
-   width: 100%;
-   height: 100%;
-   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-   transition: left 0.5s;
- }
+      .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #6dc761 0%, #53a153 100%);
+        color: #ffffff;
+        border: none;
+        padding: 1.25rem;
+        border-radius: 16px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .submit-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
 
-/* Suggestions dropdown */
-.suggestions-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: rgba(212, 177, 99, 0.726);
-  color: #ffff;
-  backdrop-filter: blur(20px);
-  border-radius: 16px;
-  border: 1px solid rgba(102, 126, 234, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 50;
-  margin-top: 8px;
-}
+      .submit-btn:hover {
+        background: linear-gradient(135deg, #68be5d 0%, #4e974e 100%);
+      }
 
-.suggestion-item {
-  padding: 1rem 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.05);
-}
+      .submit-btn:active {
+        background: linear-gradient(135deg, #65b95a 0%, #418041 100%);
+      }
 
-.suggestion-item:hover {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  font-weight: 600;
-}
+      /* Suggestions dropdown */
+      .suggestions-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(212, 177, 99, 0.726);
+        color: #ffff;
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 50;
+        margin-top: 8px;
+      }
 
-.suggestion-item:last-child {
-  border-bottom: none;
-}
+      .suggestion-item {
+        padding: 1rem 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.05);
+      }
 
-/* Custom scrollbar */
-.suggestions-dropdown::-webkit-scrollbar {
-  width: 4px;
-}
+      .suggestion-item:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        font-weight: 600;
+      }
 
-.suggestions-dropdown::-webkit-scrollbar-track {
-  background: transparent;
-}
+      .suggestion-item:last-child {
+        border-bottom: none;
+      }
 
-.suggestions-dropdown::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-}
+      /* Custom scrollbar */
+      .suggestions-dropdown::-webkit-scrollbar {
+        width: 4px;
+      }
 
-.suggestions-dropdown::-webkit-scrollbar-thumb:hover {
-  background: rgba(224, 189, 114, 0.5);
-}
+      .suggestions-dropdown::-webkit-scrollbar-track {
+        background: transparent;
+      }
 
-#success {
-	text-align: center;
-}
-#success .text-green-500 {
-	font-size: 3rem;
-	margin-bottom: 0.5rem;
-}
+      .suggestions-dropdown::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+      }
 
-@media (max-width: 600px) {
-	h1 {
-		font-size: 1.3rem;
-	}
-}
+      .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+        background: rgba(224, 189, 114, 0.5);
+      }
 
-/* FLOATING LABEL */
-.floating-label {
-  position: absolute;
-  left: 1.25rem;
-  top: 0.95rem;
-  font-size: 1.10rem;
-  font-weight: 500;
-  color: #64748b;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  pointer-events: none;
-  background: transparent;
-}
+      #success {
+        text-align: center;
+      }
+      #success .text-green-500 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+      }
 
-.form-input {
-   width: 100%;
-   padding: 1.25rem 1.5rem;
-   border: 2px solid rgba(255, 255, 255, 0.1);
-   border-radius: 16px;
-   background: rgba(255, 255, 255, 0.1);
-   font-size: 1rem;
-   font-weight: 500;
-   color: #ffffff;
-   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-   outline: none;
-   backdrop-filter: blur(10px);
-   position: relative;
-}
- .form-input::placeholder {
-   color: rgba(255, 255, 255, 0.5);
-}
- .form-input:focus {
-   border-color: rgba(255, 255, 255, 0.4);
-   background: rgba(255, 255, 255, 0.15);
-   box-shadow: 
-     0 0 0 4px rgba(255, 255, 255, 0.1),
-     0 8px 32px rgba(0, 0, 0, 0.15);
-   transform: translateY(-2px);
-}
- .form-input:not(:placeholder-shown) {
-   border-color: rgba(255, 255, 255, 0.3);
-   background: rgba(255, 255, 255, 0.12);
-}
- .floating-label {
-   position: absolute;
-   left: 1.5rem;
-   top: 1.25rem;
-   font-size: 1rem;
-   font-weight: 500;
-   color: rgba(255, 255, 255, 0.7);
-   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-   pointer-events: none;
-   background: transparent;
-}
- .form-input:focus + .floating-label,
- .form-input:not(:placeholder-shown) + .floating-label {
-   top: -12px;
-   left: 1rem;
-   font-size: 0.875rem;
-   font-weight: 600;
-   color: #ffffff;
-   background: linear-gradient(130deg, #7B6B43 ,#E1BB80);
-   padding: 4px 12px;
-   border-radius: 8px;
-   backdrop-filter: blur(10px);
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
- }
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.3rem;
+        }
+      }
 
-@media (max-width: 600px) {
-  form textarea {
-    font-size: 1rem;
-    padding: 1rem;
-  }
-  form button[type="submit"] {
-    padding: 1rem;
-    font-size: 1.1rem;
-  }
-}
+      /* FLOATING LABEL */
+      .floating-label {
+        position: absolute;
+        left: 1.25rem;
+        top: 0.95rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #64748b;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        pointer-events: none;
+        background: transparent;
+      }
 
-/* start hidden (removed from flow) */
-.error-msg {
-  display: none;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 280ms ease, transform 280ms ease;
-  max-width: 100%;
-  font-size: 1.05rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
-  color: #ffff;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-}
+      .form-input {
+        width: 100%;
+        padding: 1.25rem 1.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.1);
+        font-size: 1rem;
+        font-weight: 500;
+        color: #ffffff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+        backdrop-filter: blur(10px);
+        position: relative;
+      }
+      .form-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .form-input:focus {
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1),
+          0 8px 32px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
+      .form-input:not(:placeholder-shown) {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+      }
+      .floating-label {
+        position: absolute;
+        left: 1.5rem;
+        top: 1.25rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        background: transparent;
+      }
+      .form-input:focus + .floating-label,
+      .form-input:not(:placeholder-shown) + .floating-label {
+        top: -12px;
+        left: 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(130deg, #7b6b43, #e1bb80);
+        padding: 4px 12px;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
 
-/* visible state — animates in */
-.error-msg.visible {
-  display: block; /* make it participate in layout before animation */
-  opacity: 1;
-  transform: translateY(0);
-}
+      @media (max-width: 600px) {
+        form textarea {
+          font-size: 1rem;
+          padding: 1rem;
+        }
+        form button[type="submit"] {
+          padding: 1rem;
+          font-size: 1.1rem;
+        }
+      }
 
-/* Shared base style */
-.image-container {
-  position: fixed;
-  top: 16px;
-  width: 96px;
-  height: auto;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+      .btn-loading {
+        position: relative;
+      }
+      
+      .btn-loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        bottom: 25px;
+        right: 120px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.5s ease infinite;
+      }
 
-.image-container img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 8px;
-}
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
 
-/* Position variants */
-.left-logo {
-  left: 16px;
-}
+      /* start hidden (removed from flow) */
+      .error-msg {
+        display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 280ms ease, transform 280ms ease;
+        max-width: 100%;
+        font-size: 1.05rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.9),
+          rgba(220, 38, 38, 0.9)
+        );
+        color: #ffff;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+      }
 
-.right-logo {
-  right: 16px;
-}
+      /* visible state — animates in */
+      .error-msg.visible {
+        display: block; /* make it participate in layout before animation */
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-/* Responsive tweaks for small screens */
-@media (max-width: 640px) {
-  .image-container {
-    top: 12px;
-  }
+      /* Shared base style */
+      .image-container {
+        position: fixed;
+        top: 16px;
+        width: 96px;
+        height: auto;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-  .left-logo { 
-    left: 12px; 
-    width: 125px;
-  }
+      .image-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 8px;
+      }
 
-  .right-logo { 
-    right: 12px; 
-    width: 56px;
-  }
-}
+      /* Position variants */
+      .left-logo {
+        left: 16px;
+      }
 
-/* Larger logo for desktops */
-@media (min-width: 1024px) {
-  .image-container {
-    width: 140px;
-    top: 24px;
-  }
-  .left-logo { left: 24px; }
-  .right-logo { right: 24px; }
-  .form-card { margin-top: 0; }
-}
-  </style>
-</head>
-<body class="flex items-center justify-center h-screen">
+      .right-logo {
+        right: 16px;
+      }
 
-<div class="image-container left-logo">
-  <img src="images/LOGO_KPPN_JAYAPURA_FIX.png" alt="Logo KPPN Jayapura">
-</div>
+      /* Responsive tweaks for small screens */
+      @media (max-width: 640px) {
+        .image-container {
+          top: 12px;
+        }
 
-<div class="image-container right-logo">
-  <img src="images/logo-kementerian-keuangan-356.png" alt="Second Logo">
-</div>
+        .left-logo {
+          left: 12px;
+          width: 125px;
+        }
 
-  <div class="form-card p-6 m-6 rounded-xl shadow-md w-full max-w-md">
-    
-    <h1 id="header" class="text-3xl font-bold text-center">Form Antrian</h1>
-    <form id="antrianForm" class="space-y-4">
+        .right-logo {
+          right: 12px;
+          width: 56px;
+        }
+      }
 
-    <!-- Kode Satker -->
-    <div class="relative">
-      <input type="text" id="kode" name="kode" placeholder=" " class="form-input" autocomplete="off">
-      <label class="floating-label">Kode Satker</label>
-      <ul id="kodeSuggestions" 
-          class="suggestions-dropdown hidden"></ul>
+      /* Larger logo for desktops */
+      @media (min-width: 1024px) {
+        .image-container {
+          width: 140px;
+          top: 24px;
+        }
+        .left-logo {
+          left: 24px;
+        }
+        .right-logo {
+          right: 24px;
+        }
+        .form-card {
+          margin-top: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center h-screen">
+    <div class="image-container left-logo">
+      <img src="images/LOGO_KPPN_JAYAPURA_FIX.png" alt="Logo KPPN Jayapura" />
     </div>
-    <!-- Nama Satker -->
-    <div class="relative rounded-xl">
-      <input type="text" id="nama" name="nama" placeholder=" " class="form-input" autocomplete="off"/>
-      <label class="floating-label">Nama Satker</label>
-      <ul id="namaSuggestions" 
-      class="suggestions-dropdown hidden"></ul>
+
+    <div class="image-container right-logo">
+      <img src="images/logo-kementerian-keuangan-356.png" alt="Second Logo" />
     </div>
 
-    <!-- Nomor HP -->
-    <div class="relative">
-      <input type="number" id="handphone" placeholder=" " class="form-input">
-      <label class="floating-label">Nomor HP</label>
+    <div class="form-card p-6 m-6 rounded-xl shadow-md w-full max-w-md">
+      <h1 id="header" class="text-3xl font-bold text-center">Form Antrian</h1>
+      <form id="antrianForm" class="space-y-4">
+        <!-- Kode Satker -->
+        <div class="relative">
+          <input
+            type="text"
+            id="kode"
+            name="kode"
+            placeholder=" "
+            class="form-input"
+            autocomplete="off"
+          />
+          <label class="floating-label">Kode Satker</label>
+          <ul id="kodeSuggestions" class="suggestions-dropdown hidden"></ul>
+        </div>
+        <!-- Nama Satker -->
+        <div class="relative rounded-xl">
+          <input
+            type="text"
+            id="nama"
+            name="nama"
+            placeholder=" "
+            class="form-input"
+            autocomplete="off"
+          />
+          <label class="floating-label">Nama Satker</label>
+          <ul id="namaSuggestions" class="suggestions-dropdown hidden"></ul>
+        </div>
+
+        <!-- Nomor HP -->
+        <div class="relative">
+          <input
+            type="number"
+            id="handphone"
+            placeholder=" "
+            class="form-input"
+          />
+          <label class="floating-label">Nomor HP</label>
+        </div>
+
+        <!-- Keperluan -->
+        <div class="relative">
+          <textarea
+            id="deskripsi"
+            placeholder=" "
+            class="form-input"
+          ></textarea>
+          <label class="floating-label">Keperluan</label>
+        </div>
+
+        <!-- Error Message  -->
+        <div
+          id="errorMSG"
+          class="error-msg hidden"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        ></div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+      </form>
+
+      <!-- Success State -->
+      <div id="success" class="hidden text-center">
+        <p class="text-white">Nomor Antrian Anda:</p>
+        <div
+          id="nomorDisplay"
+          class="text-5xl font-bold text-orange-500 mt-2 mb-2"
+        ></div>
+        <p class="text-lg font-semibold mt-2 text-white">
+          Terima kasih, data berhasil dikirim!
+        </p>
+      </div>
     </div>
 
-    <!-- Keperluan -->
-    <div class="relative">
-      <textarea id="deskripsi" placeholder=" " class="form-input"></textarea>
-      <label class="floating-label">Keperluan</label>
-    </div>  
+    <script>
+      const { createClient } = supabase;
+      const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
+      const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-    <!-- Error Message  -->
-    <div id="errorMSG" class="error-msg hidden" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      //* Wire up Vercel Analytics
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
 
-      <button type="submit" class="submit-btn">Submit</button>
-    </form>
+      // Debounce helper (to avoid spamming Supabase)
+      function debounce(fn, delay) {
+        let timer;
+        return function (...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn.apply(this, args), delay);
+        };
+      }
 
-    <!-- Success State -->
-    <div id="success" class="hidden text-center">
-      <p class="text-white">Nomor Antrian Anda:</p>
-      <div id="nomorDisplay" class="text-5xl font-bold text-orange-500 mt-2 mb-2"></div>
-      <p class="text-lg font-semibold mt-2 text-white">Terima kasih, data berhasil dikirim!</p>
-    </div>
-  </div>
-  
-  <script>
-    const { createClient } = supabase;
-    const supabaseUrl = "https://finxocxyrjizxjvvcbim.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpbnhvY3h5cmppenhqdnZjYmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5ODM1MjcsImV4cCI6MjA3MzU1OTUyN30.wK5N8xoDococE7AfACmP8LPh-nXE-lqKZte15MSM8P4";
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+      const form = document.getElementById("antrianForm");
+      const successDiv = document.getElementById("success");
+      const h1 = document.getElementById("header");
+      let transitionHandler = null;
+      let errorTimer = null;
 
-    //* Wire up Vercel Analytics
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+      const namaInput = document.getElementById("nama");
+      const kodeInput = document.getElementById("kode");
+      const namaSuggestions = document.getElementById("namaSuggestions");
+      const kodeSuggestions = document.getElementById("kodeSuggestions");
+      const submitBtn = document.getElementById("submitBtn");
 
-  // Debounce helper (to avoid spamming Supabase)
-  function debounce(fn, delay) {
-    let timer;
-    return function(...args) {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn.apply(this, args), delay);
-    };
-  }
+      // Show error message
+      function showError(message, timeout = 3000) {
+        const errorMSG = document.getElementById("errorMSG");
+        errorMSG.textContent = message;
 
-  const form = document.getElementById("antrianForm");
-  const successDiv = document.getElementById("success");
-  const h1 = document.getElementById("header");
-  let transitionHandler = null;
-  let errorTimer = null;
+        // clear previous timeout and transition handler (if any)
+        if (errorTimer) {
+          clearTimeout(errorTimer);
+          errorTimer = null;
+        }
+        if (transitionHandler) {
+          errorMSG.removeEventListener("transitionend", transitionHandler);
+          transitionHandler = null;
+        }
 
-  const namaInput = document.getElementById("nama");
-  const kodeInput = document.getElementById("kode");
-  const namaSuggestions = document.getElementById("namaSuggestions");
-  const kodeSuggestions = document.getElementById("kodeSuggestions");
+        // If element already visible, restart animation cleanly
+        if (errorMSG.style.display === "block") {
+          // restart by forcing reflow and toggling class
+          errorMSG.classList.remove("visible");
+          void errorMSG.offsetWidth;
+          errorMSG.classList.add("visible");
+        } else {
+          // Make block so it takes space, then on next frame add `.visible` to animate
+          errorMSG.style.display = "block";
+          // double RAF is a reliable way to start the transition across browsers
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => errorMSG.classList.add("visible"))
+          );
+        }
 
-// Show error message
-function showError(message, timeout = 3000) {
-  const errorMSG = document.getElementById("errorMSG");
-  errorMSG.textContent = message;
+        // schedule hide after timeout
+        errorTimer = setTimeout(() => hideError(errorMSG), timeout);
+      }
 
-  // clear previous timeout and transition handler (if any)
-  if (errorTimer) {
-    clearTimeout(errorTimer);
-    errorTimer = null;
-  }
-  if (transitionHandler) {
-    errorMSG.removeEventListener('transitionend', transitionHandler);
-    transitionHandler = null;
-  }
+      function hideError(el) {
+        // remove visible class -> triggers transition to opacity:0 + translateY
+        el.classList.remove("visible");
 
-  // If element already visible, restart animation cleanly
-  if (errorMSG.style.display === 'block') {
-    // restart by forcing reflow and toggling class
-    errorMSG.classList.remove('visible');
-    void errorMSG.offsetWidth;
-    errorMSG.classList.add('visible');
-  } else {
-    // Make block so it takes space, then on next frame add `.visible` to animate
-    errorMSG.style.display = 'block';
-    // double RAF is a reliable way to start the transition across browsers
-    requestAnimationFrame(() => requestAnimationFrame(() => errorMSG.classList.add('visible')));
-  }
+        // ensure we don't attach multiple handlers
+        if (transitionHandler) {
+          el.removeEventListener("transitionend", transitionHandler);
+          transitionHandler = null;
+        }
 
-  // schedule hide after timeout
-  errorTimer = setTimeout(() => hideError(errorMSG), timeout);
-}
+        // wait for transition to finish then set display:none
+        transitionHandler = function onEnd(e) {
+          // guard: only respond to opacity transition (avoids multiple fires)
+          if (e.propertyName !== "opacity") return;
+          el.style.display = "none";
+          el.removeEventListener("transitionend", transitionHandler);
+          transitionHandler = null;
+        };
 
-function hideError(el) {
-  // remove visible class -> triggers transition to opacity:0 + translateY
-  el.classList.remove('visible');
+        el.addEventListener("transitionend", transitionHandler);
 
-  // ensure we don't attach multiple handlers
-  if (transitionHandler) {
-    el.removeEventListener('transitionend', transitionHandler);
-    transitionHandler = null;
-  }
+        // fallback: if transitionend doesn't fire (reduced-motion, weird browser),
+        // forcibly hide after transition duration + small buffer
+        setTimeout(() => {
+          if (transitionHandler) {
+            el.style.display = "none";
+            el.removeEventListener("transitionend", transitionHandler);
+            transitionHandler = null;
+          }
+        }, 350);
+      }
 
-  // wait for transition to finish then set display:none
-  transitionHandler = function onEnd(e) {
-    // guard: only respond to opacity transition (avoids multiple fires)
-    if (e.propertyName !== 'opacity') return;
-    el.style.display = 'none';
-    el.removeEventListener('transitionend', transitionHandler);
-    transitionHandler = null;
-  };
+      // Fetch Nama Satker suggestions
+      async function fetchNamaSuggestions(query) {
+        if (!query) {
+          namaSuggestions.classList.add("hidden");
+          return;
+        }
 
-  el.addEventListener('transitionend', transitionHandler);
+        const { data, error } = await supabaseClient
+          .from("satker")
+          .select("nama, kode")
+          .ilike("nama", `%${query}%`)
+          .limit(10);
 
-  // fallback: if transitionend doesn't fire (reduced-motion, weird browser),
-  // forcibly hide after transition duration + small buffer
-  setTimeout(() => {
-    if (transitionHandler) {
-      el.style.display = 'none';
-      el.removeEventListener('transitionend', transitionHandler);
-      transitionHandler = null;
-    }
-  }, 350);
-}
+        if (error) return console.error(error);
 
-  // Fetch Nama Satker suggestions
-  async function fetchNamaSuggestions(query) {
-    if (!query) {
-      namaSuggestions.classList.add("hidden");
-      return;
-    }
+        namaSuggestions.innerHTML = "";
+        data.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item.nama;
+          li.className = "p-2 hover:bg-blue-100 cursor-pointer";
+          li.onclick = () => {
+            namaInput.value = item.nama;
+            kodeInput.value = item.kode; // autofill kode
+            namaSuggestions.classList.add("hidden");
+          };
+          namaSuggestions.appendChild(li);
+        });
 
-    const { data, error } = await supabaseClient
-      .from("satker")
-      .select("nama, kode")
-      .ilike("nama", `%${query}%`)
-      .limit(10);
+        namaSuggestions.classList.toggle("hidden", data.length === 0);
+      }
 
-    if (error) return console.error(error);
+      // Fetch Kode Satker suggestions
+      async function fetchKodeSuggestions(query) {
+        if (!query) {
+          kodeSuggestions.classList.add("hidden");
+          return;
+        }
 
-    namaSuggestions.innerHTML = "";
-    data.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item.nama;
-      li.className = "p-2 hover:bg-blue-100 cursor-pointer";
-      li.onclick = () => {
-        namaInput.value = item.nama;
-        kodeInput.value = item.kode; // autofill kode
-        namaSuggestions.classList.add("hidden");
-      };
-      namaSuggestions.appendChild(li);
-    });
+        const { data, error } = await supabaseClient
+          .from("satker")
+          .select("kode, nama")
+          .ilike("kode", `%${query}%`)
+          .limit(10);
 
-    namaSuggestions.classList.toggle("hidden", data.length === 0);
-  }
+        if (error) return console.error(error);
 
-  // Fetch Kode Satker suggestions
-  async function fetchKodeSuggestions(query) {
-    if (!query) {
-      kodeSuggestions.classList.add("hidden");
-      return;
-    }
+        kodeSuggestions.innerHTML = "";
+        data.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item.kode;
+          li.className = "p-2 hover:bg-blue-100 cursor-pointer";
+          li.onclick = () => {
+            kodeInput.value = item.kode;
+            namaInput.value = item.nama; // autofill nama
+            kodeSuggestions.classList.add("hidden");
+          };
+          kodeSuggestions.appendChild(li);
+        });
 
-    const { data, error } = await supabaseClient
-      .from("satker")
-      .select("kode, nama")
-      .ilike("kode", `%${query}%`)
-      .limit(10);
+        kodeSuggestions.classList.toggle("hidden", data.length === 0);
+      }
 
-    if (error) return console.error(error);
+      // Attach events with debounce
+      namaInput.addEventListener(
+        "input",
+        debounce((e) => {
+          fetchNamaSuggestions(e.target.value);
+        }, 275)
+      );
 
-    kodeSuggestions.innerHTML = "";
-    data.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item.kode;
-      li.className = "p-2 hover:bg-blue-100 cursor-pointer";
-      li.onclick = () => {
-        kodeInput.value = item.kode;
-        namaInput.value = item.nama; // autofill nama
-        kodeSuggestions.classList.add("hidden");
-      };
-      kodeSuggestions.appendChild(li);
-    });
+      kodeInput.addEventListener(
+        "input",
+        debounce((e) => {
+          fetchKodeSuggestions(e.target.value);
+        }, 275)
+      );
 
-    kodeSuggestions.classList.toggle("hidden", data.length === 0);
-  }
+      // Hide suggestions if clicked outside
+      document.addEventListener("click", (e) => {
+        if (
+          !namaInput.contains(e.target) &&
+          !namaSuggestions.contains(e.target)
+        ) {
+          namaSuggestions.classList.add("hidden");
+        }
+        if (
+          !kodeInput.contains(e.target) &&
+          !kodeSuggestions.contains(e.target)
+        ) {
+          kodeSuggestions.classList.add("hidden");
+        }
+      });
 
-  // Attach events with debounce
-  namaInput.addEventListener("input", debounce((e) => {
-    fetchNamaSuggestions(e.target.value);
-  }, 275));
+      function setLoading(loading) {
+        if (loading) {
+          submitBtn.classList.add("btn-loading");
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Sending...";
+        } else {
+          submitBtn.classList.remove("btn-loading");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit";
+        }
+      }
 
-  kodeInput.addEventListener("input", debounce((e) => {
-    fetchKodeSuggestions(e.target.value);
-  }, 275));
+      // 🔹 Submit form
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-  // Hide suggestions if clicked outside
-  document.addEventListener("click", (e) => {
-    if (!namaInput.contains(e.target) && !namaSuggestions.contains(e.target)) {
-      namaSuggestions.classList.add("hidden");
-    }
-    if (!kodeInput.contains(e.target) && !kodeSuggestions.contains(e.target)) {
-      kodeSuggestions.classList.add("hidden");
-    }
-  });
+        setLoading(true);
+        
+        const nama = namaInput.value;
+        const kode = kodeInput.value;
+        const phone = document.getElementById("handphone").value;
+        const deskripsi = document.getElementById("deskripsi").value;
 
-    // 🔹 Submit form
-    form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+        const errorMSG = document.getElementById("errorMSG");
 
-    const nama = namaInput.value;
-    const kode = kodeInput.value;
-    const phone = document.getElementById("handphone").value;
-    const deskripsi = document.getElementById("deskripsi").value;
+        if (!nama || !kode || !phone || !deskripsi) {
+          showError("Harap Isi Semua Kolom!");
+          setLoading(false);
+          return;
+        }
 
-    const errorMSG = document.getElementById("errorMSG");
+        if (kode.length < 6) {
+          showError("Kode Satker tidak valid! (Minimal 6 karakter)");
+          setLoading(false);
+          return;
+        }
 
-    if (!nama || !kode || !phone || !deskripsi) {
-      showError("Harap Isi Semua Kolom!");
-      return;
-    }
+        if (!/^08\d*$/.test(phone)) {
+          showError("Nomor HP tidak valid! (Harus diawali 08)");
+          setLoading(false);
+          return;
+        }
 
-    if (kode.length < 6) {
-      showError("Kode Satker tidak valid! (Minimal 6 karakter)");
-      return;
-    }
+        const { data, error } = await supabaseClient
+          .from("antrian")
+          .insert([{ nama, kode, phone, deskripsi }])
+          .select("nomor_antrian")
+          .single();
 
-    if (!/^08\d*$/.test(phone)) {
-      showError("Nomor HP tidak valid! (Harus diawali 08)");
-      return;
-    }
+        if (error) {
+          alert("Gagal kirim data: " + error.message);
+          setLoading(false);
+        } else {
+          form.classList.add("hidden");
+          h1.classList.add("hidden");
+          successDiv.classList.remove("hidden");
+        }
 
-    const { data ,error } = await supabaseClient
-      .from("antrian")
-      .insert([{ nama, kode, phone, deskripsi }])
-      .select("nomor_antrian")
-      .single();
-
-    if (error) {
-      alert("Gagal kirim data: " + error.message);
-    } else {
-      form.classList.add("hidden");
-      h1.classList.add("hidden");
-      successDiv.classList.remove("hidden");
-    }
-
-      // Show nomor antrian
-      document.getElementById("nomorDisplay").textContent = data.nomor_antrian;
-});
-  </script>
-</body>
+        // Show nomor antrian
+        document.getElementById("nomorDisplay").textContent =
+          data.nomor_antrian;
+      });
+    </script>
+  </body>
 </html>
